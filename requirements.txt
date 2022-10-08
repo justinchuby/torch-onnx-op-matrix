@@ -1,4 +1,4 @@
 onnx
 expecttest
 tqdm
-yaml
+PyYAML
