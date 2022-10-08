@@ -49,19 +49,23 @@ class SingleOpModel(torch.nn.Module):
         return self.operator(*args, **self.kwargs)
 
 
-def produce_op_sample() -> Iterator[
-    Tuple[common_methods_invocations.OpInfo, torch.nn.Module, tuple, torch.dtype]
-]:
+def produce_op_sample() -> Iterator[Tuple[str, torch.nn.Module, tuple, torch.dtype]]:
     """Produce samples of all operators to test."""
 
     op_db = common_methods_invocations.op_db
     for op_info in op_db:
         for dtype in TESTED_DTYPES:
-            for sample in op_info.sample_inputs(
-                device="cpu", dtype=dtype, requires_grad=False
-            ):
-                model = SingleOpModel(op_info.op, sample.kwargs)
-                yield op_info, model, (sample.input, *sample.args), dtype
+            try:
+                for sample in op_info.sample_inputs(
+                    device="cpu", dtype=dtype, requires_grad=False
+                ):
+                    model = SingleOpModel(op_info.op, sample.kwargs)
+                    yield op_info.name, model, (sample.input, *sample.args), dtype
+            except (RuntimeError, TypeError):
+                # Skip operators that don't support the dtype
+                # E.g. "normal_kernel_cpu" not implemented for 'Bool'
+                # Or Got unsupported ScalarType ComplexHalf
+                pass
 
 
 @dataclasses.dataclass
@@ -74,7 +78,13 @@ class OpTestResult:
     exception: Optional[Exception]
 
 
-def check_single_op(op_info, model, inputs, dtype, opset_version):
+def check_single_op(
+    op_name: str,
+    model: torch.nn.Module,
+    inputs: tuple,
+    dtype: torch.dtype,
+    opset_version: int,
+) -> OpTestResult:
     # Export the model
     model_buffer = io.BytesIO()
 
@@ -91,7 +101,7 @@ def check_single_op(op_info, model, inputs, dtype, opset_version):
         return OpTestResult(
             opset=opset_version,
             dtype=dtype,
-            operator=op_info.name,
+            operator=op_name,
             exception=e,
         )
 
@@ -104,14 +114,30 @@ def check_single_op(op_info, model, inputs, dtype, opset_version):
         return OpTestResult(
             opset=opset_version,
             dtype=dtype,
-            operator=op_info.name,
+            operator=op_name,
             exception=e,
         )
+
+    return OpTestResult(
+        opset=opset_version,
+        dtype=dtype,
+        operator=op_name,
+        exception=None,
+    )
 
 
 def test_op_consistency() -> List[OpTestResult]:
     """Test that torch.onnx export produces the same results as aten."""
-    all_samples = list(tqdm.tqdm(produce_op_sample()))
-    for op_info, model, inputs, dtype in tqdm.tqdm(all_samples):
-        for opset_version in TESTED_OPSETS:
-            result = check_single_op(op_info, model, inputs, dtype, opset_version)
+    results = []
+    i = 0
+
+    for opset_version in TESTED_OPSETS:
+        for inputs in tqdm.tqdm(produce_op_sample()):
+            results.append(check_single_op(*inputs, opset_version))
+            i += 1
+            if i > 100:
+                break
+
+        break
+
+    return results
