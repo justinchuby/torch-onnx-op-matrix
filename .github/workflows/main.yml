@@ -32,7 +32,9 @@ jobs:
       - name: Install dependencies
         run: bash install.sh
       - name: Run survey
-        run: python op_matrix/op_survey.py --opset ${{ matrix.opset }}
+        run: |
+          export TORCH_ONNX_EXPERIMENTAL_RUNTIME_TYPE_CHECK=ERRORS
+          python op_matrix/op_survey.py --opset ${{ matrix.opset }}
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
         with:
