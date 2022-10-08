@@ -221,7 +221,7 @@ def test_op_consistency(opset_version: int, all_samples) -> List[OpTestResult]:
 
 
 def main(args):
-    opset_version = args.opset_version
+    opset_version = args.opset
     collection = ResultCollection()
 
     print("Producing samples...")
