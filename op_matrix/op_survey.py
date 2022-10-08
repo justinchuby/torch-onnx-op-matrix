@@ -1,8 +1,9 @@
 """Test consistency between torch.onnx exported operators and aten operators."""
 
+import json
 import dataclasses
 import io
-from typing import Iterator, List, Optional, Tuple
+from typing import Dict, Iterator, List, Optional, Tuple
 
 import onnx
 import torch
@@ -16,6 +17,8 @@ MIN_ONNX_OPSET_VERSION = 9
 MAX_ONNX_OPSET_VERSION = _constants.ONNX_MAX_OPSET
 
 TESTED_OPSETS = range(MIN_ONNX_OPSET_VERSION, MAX_ONNX_OPSET_VERSION + 1)
+
+LIMIT_SAMPLE_PER_OP = 10
 
 
 TESTED_DTYPES = (
@@ -58,10 +61,12 @@ def produce_op_sample() -> Iterator[Tuple[str, torch.nn.Module, tuple, torch.dty
             try:
                 for sample in op_info.sample_inputs(
                     device="cpu", dtype=dtype, requires_grad=False
-                ):
+                )[:LIMIT_SAMPLE_PER_OP]:
                     model = SingleOpModel(op_info.op, sample.kwargs)
+                    # Try to run it once. If it fails, skip it.
+                    model(sample.input, *sample.args)
                     yield op_info.name, model, (sample.input, *sample.args), dtype
-            except (RuntimeError, TypeError):
+            except Exception:
                 # Skip operators that don't support the dtype
                 # E.g. "normal_kernel_cpu" not implemented for 'Bool'
                 # Or Got unsupported ScalarType ComplexHalf
@@ -78,6 +83,34 @@ class OpTestResult:
     exception: Optional[Exception]
 
 
+class ResultCollection:
+    def __init__(self) -> None:
+        self.collection: Dict[Tuple[str, str, int], List[Exception | None]] = {}
+
+    def add(self, result: OpTestResult) -> None:
+        key = (result.operator, str(result.dtype), result.opset)
+        if key not in self.collection:
+            self.collection[key] = []
+        self.collection[key].append(result.exception)
+
+    def as_dict(self) -> List:
+        """Convert the collection to a dict."""
+        # Filter out the None values
+        return [
+            {
+                "operator": key[0],
+                "dtype": key[1],
+                "opset": key[2],
+                "exceptions": [
+                    (type(e).__name__, str(e)) for e in value if e is not None
+                ],
+                "correct": value.count(None),
+                "total": len(value),
+            }
+            for key, value in self.collection.items()
+        ]
+
+
 def check_single_op(
     op_name: str,
     model: torch.nn.Module,
@@ -89,6 +122,7 @@ def check_single_op(
     model_buffer = io.BytesIO()
 
     try:
+        # TODO: Catch the warnings
         torch.onnx.export(
             model,
             inputs,
@@ -126,18 +160,29 @@ def check_single_op(
     )
 
 
-def test_op_consistency() -> List[OpTestResult]:
+def test_op_consistency(opset_version: int) -> List[OpTestResult]:
     """Test that torch.onnx export produces the same results as aten."""
     results = []
-    i = 0
 
-    for opset_version in TESTED_OPSETS:
-        for inputs in tqdm.tqdm(produce_op_sample()):
-            results.append(check_single_op(*inputs, opset_version))
-            i += 1
-            if i > 100:
-                break
+    for i, inputs in tqdm.tqdm(enumerate(produce_op_sample())):
+        result = check_single_op(*inputs, opset_version)
+        results.append(result)
 
-        break
+        if i > 10:
+            break
 
     return results
+
+
+def main():
+    results = test_op_consistency(16)
+    collection = ResultCollection()
+    for result in results:
+        collection.add(result)
+    # Save results to a json file
+    with open("op_survey.json", "w") as f:
+        json.dump(collection.as_dict(), f, indent=2)
+
+
+if __name__ == "__main__":
+    main()
