@@ -7,6 +7,7 @@ import dataclasses
 import io
 import traceback
 from typing import Any, Dict, Iterator, List, Optional, Tuple
+import warnings
 
 import onnx
 import torch
@@ -69,19 +70,21 @@ def produce_op_sample() -> Iterator[
     for op_info in op_db:
         for dtype in TESTED_DTYPES:
             try:
-                for sample in op_info.sample_inputs(
+                for i, sample in enumerate(op_info.sample_inputs(
                     device="cpu", dtype=dtype, requires_grad=False
-                )[:LIMIT_SAMPLE_PER_OP]:
+                )):
+                    if i >= LIMIT_SAMPLE_PER_OP:
+                        break
                     model = SingleOpModel(op_info.op, sample.kwargs)
                     yield op_info, model, (
                         sample.input,
                         *sample.args,
                     ), dtype, sample
-            except Exception:
+            except Exception as e:
                 # Skip operators that don't support the dtype
                 # E.g. "normal_kernel_cpu" not implemented for 'Bool'
                 # Or Got unsupported ScalarType ComplexHalf
-                pass
+                warnings.warn(f"!!!Skipping {op_info.name} for {dtype}: {e}")
 
 
 @dataclasses.dataclass
@@ -100,10 +103,10 @@ class OpTestResult:
 
 class ResultCollection:
     def __init__(self) -> None:
-        self.collection: Dict[Tuple[str, str, int], List[OpTestResult]] = {}
+        self.collection: Dict[Tuple[str, str, int, str], List[OpTestResult]] = {}
 
     def add(self, result: OpTestResult) -> None:
-        key = (result.operator, str(result.dtype), result.opset)
+        key = (result.operator, str(result.dtype), result.opset, result.aten_name)
         if key not in self.collection:
             self.collection[key] = []
         self.collection[key].append(result)
@@ -116,6 +119,7 @@ class ResultCollection:
                 "operator": key[0],
                 "dtype": key[1],
                 "opset": key[2],
+                "aten_name": key[3],
                 "exceptions": [
                     {
                         "type": type(result.exception).__name__,
@@ -219,6 +223,7 @@ def main():
             collection.add(result)
         gc.collect()
     # Save results to a json file
+    print("Saving results...")
     with open("op_survey.json", "w") as f:
         json.dump(collection.as_dict(), f, indent=2)
 
