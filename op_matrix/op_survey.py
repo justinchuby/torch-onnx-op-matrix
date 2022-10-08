@@ -3,6 +3,7 @@
 import json
 import dataclasses
 import io
+import traceback
 from typing import Any, Dict, Iterator, List, Optional, Tuple
 
 import onnx
@@ -86,6 +87,7 @@ class OpTestResult:
     dtype: torch.dtype
     operator: str
     exception: Optional[Exception]
+    traceback: Optional[str]
     inputs: Tuple
     kwargs: Dict[str, Any]
 
@@ -114,6 +116,7 @@ class ResultCollection:
                         "message": str(result.exception),
                         "inputs": repr(result.inputs),
                         "kwargs": repr(result.kwargs),
+                        "traceback": result.traceback,
                     }
                     for result in value
                     if result.exception is not None
@@ -152,6 +155,7 @@ def check_single_op(
             dtype=dtype,
             operator=op_name,
             exception=e,
+            traceback=traceback.format_exc(),
             inputs=inputs,
             kwargs=sample.kwargs,
         )
@@ -167,6 +171,7 @@ def check_single_op(
             dtype=dtype,
             operator=op_name,
             exception=e,
+            traceback=traceback.format_exc(),
             inputs=inputs,
             kwargs=sample.kwargs,
         )
@@ -176,6 +181,7 @@ def check_single_op(
         dtype=dtype,
         operator=op_name,
         exception=None,
+        traceback=None,
         inputs=inputs,
         kwargs=sample.kwargs,
     )
