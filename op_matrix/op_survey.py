@@ -70,9 +70,11 @@ def produce_op_sample() -> Iterator[
     for op_info in op_db:
         for dtype in TESTED_DTYPES:
             try:
-                for i, sample in enumerate(op_info.sample_inputs(
-                    device="cpu", dtype=dtype, requires_grad=False
-                )):
+                for i, sample in enumerate(
+                    op_info.sample_inputs(
+                        device="cpu", dtype=dtype, requires_grad=False
+                    )
+                ):
                     if i >= LIMIT_SAMPLE_PER_OP:
                         break
                     model = SingleOpModel(op_info.op, sample.kwargs)
@@ -200,13 +202,15 @@ def check_single_op(
     )
 
 
-def test_op_consistency(opset_version: int) -> List[OpTestResult]:
+def test_op_consistency(opset_version: int, all_samples) -> List[OpTestResult]:
     """Test that torch.onnx export produces the same results as aten."""
     results = []
-    print("Producing samples...")
-    all_samples = produce_op_sample()
 
-    for i, (op_info, model, inputs, dtype, sample) in tqdm.tqdm(enumerate(all_samples)):
+    for i, (op_info, model, inputs, dtype, sample) in tqdm.tqdm(
+        enumerate(all_samples),
+        total=len(all_samples),
+        desc=f"Testing opset {opset_version}",
+    ):
         result = check_single_op(op_info, model, inputs, dtype, opset_version, sample)
         results.append(result)
 
@@ -216,9 +220,12 @@ def test_op_consistency(opset_version: int) -> List[OpTestResult]:
 def main():
     collection = ResultCollection()
 
+    print("Producing samples...")
+    all_samples = list(produce_op_sample())
+
     for opset_version in TESTED_OPSETS:
         print(f"Testing opset {opset_version}")
-        results = test_op_consistency(opset_version)
+        results = test_op_consistency(opset_version, all_samples)
         for result in results:
             collection.add(result)
         gc.collect()
