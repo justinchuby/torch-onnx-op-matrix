@@ -1,5 +1,6 @@
 """Test consistency between torch.onnx exported operators and aten operators."""
 
+import argparse
 import json
 import dataclasses
 import io
@@ -163,19 +164,21 @@ def check_single_op(
 def test_op_consistency(opset_version: int) -> List[OpTestResult]:
     """Test that torch.onnx export produces the same results as aten."""
     results = []
+    print("Producing samples...")
+    all_samples = produce_op_sample()
 
-    for i, inputs in tqdm.tqdm(enumerate(produce_op_sample())):
+    for i, inputs in tqdm.tqdm(enumerate(all_samples)):
         result = check_single_op(*inputs, opset_version)
         results.append(result)
-
-        if i > 10:
-            break
 
     return results
 
 
-def main():
-    results = test_op_consistency(16)
+def main(args):
+    opset_version = args.opset_version
+    print(f"Testing opset version {opset_version}")
+
+    results = test_op_consistency(opset_version)
     collection = ResultCollection()
     for result in results:
         collection.add(result)
@@ -185,4 +188,11 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--opset-version",
+        type=int,
+        default=MAX_ONNX_OPSET_VERSION,
+        help="Opset version to test",
+    )
+    main(parser.parse_args())
