@@ -1,5 +1,6 @@
 """Test consistency between torch.onnx exported operators and aten operators."""
 
+import gc
 import itertools
 import json
 import dataclasses
@@ -216,6 +217,7 @@ def main():
         results = test_op_consistency(opset_version)
         for result in results:
             collection.add(result)
+        gc.collect()
     # Save results to a json file
     with open("op_survey.json", "w") as f:
         json.dump(collection.as_dict(), f, indent=2)
