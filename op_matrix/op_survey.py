@@ -1,5 +1,6 @@
 """Test consistency between torch.onnx exported operators and aten operators."""
 
+import itertools
 import json
 import dataclasses
 import io
@@ -11,6 +12,8 @@ import torch
 import tqdm
 from torch.onnx import _constants
 from torch.testing._internal import common_methods_invocations
+from torch.testing._internal.opinfo.core import OpInfo
+from torch.testing._internal.opinfo import definitions as opinfo_definitions
 
 # The min onnx opset version to test for
 MIN_ONNX_OPSET_VERSION = 9
@@ -54,13 +57,20 @@ class SingleOpModel(torch.nn.Module):
 
 
 def produce_op_sample() -> Iterator[
-    Tuple[str, torch.nn.Module, tuple, torch.dtype, Any]
+    Tuple[OpInfo, torch.nn.Module, tuple, torch.dtype, Any]
 ]:
     """Produce samples of all operators to test."""
 
-    op_db = common_methods_invocations.op_db
+    op_db = itertools.chain(
+        common_methods_invocations.op_db,
+        opinfo_definitions.op_db,
+    )
     for op_info in op_db:
         for dtype in TESTED_DTYPES:
+            if op_info.name == "nn.functional.conv2d" or op_info.aten_name == "conv2d":
+                # FIXME: Why do we not see nn.functional.conv2d?
+                print(ValueError(op_info))
+                exit()
             try:
                 for sample in op_info.sample_inputs(
                     device="cpu", dtype=dtype, requires_grad=False
@@ -68,7 +78,7 @@ def produce_op_sample() -> Iterator[
                     model = SingleOpModel(op_info.op, sample.kwargs)
                     # Try to run it once. If it fails, skip it.
                     model(sample.input, *sample.args)
-                    yield op_info.name, model, (
+                    yield op_info, model, (
                         sample.input,
                         *sample.args,
                     ), dtype, sample
@@ -86,6 +96,7 @@ class OpTestResult:
     opset: int
     dtype: torch.dtype
     operator: str
+    aten_name: str
     exception: Optional[Exception]
     traceback: Optional[str]
     inputs: Tuple
@@ -129,7 +140,7 @@ class ResultCollection:
 
 
 def check_single_op(
-    op_name: str,
+    op_info: OpInfo,
     model: torch.nn.Module,
     inputs: tuple,
     dtype: torch.dtype,
@@ -153,7 +164,8 @@ def check_single_op(
         return OpTestResult(
             opset=opset_version,
             dtype=dtype,
-            operator=op_name,
+            operator=op_info.name,
+            aten_name=op_info.aten_name,
             exception=e,
             traceback=traceback.format_exc(),
             inputs=inputs,
@@ -169,7 +181,8 @@ def check_single_op(
         return OpTestResult(
             opset=opset_version,
             dtype=dtype,
-            operator=op_name,
+            operator=op_info.name,
+            aten_name=op_info.aten_name,
             exception=e,
             traceback=traceback.format_exc(),
             inputs=inputs,
@@ -179,7 +192,8 @@ def check_single_op(
     return OpTestResult(
         opset=opset_version,
         dtype=dtype,
-        operator=op_name,
+        operator=op_info.name,
+        aten_name=op_info.aten_name,
         exception=None,
         traceback=None,
         inputs=inputs,
@@ -193,8 +207,8 @@ def test_op_consistency(opset_version: int) -> List[OpTestResult]:
     print("Producing samples...")
     all_samples = produce_op_sample()
 
-    for i, (op_name, model, inputs, dtype, sample) in tqdm.tqdm(enumerate(all_samples)):
-        result = check_single_op(op_name, model, inputs, dtype, opset_version, sample)
+    for i, (op_info, model, inputs, dtype, sample) in tqdm.tqdm(enumerate(all_samples)):
+        result = check_single_op(op_info, model, inputs, dtype, opset_version, sample)
         results.append(result)
 
     return results
