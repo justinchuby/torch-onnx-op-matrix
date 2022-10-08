@@ -29,8 +29,7 @@ LIMIT_SAMPLE_PER_OP = 10
 
 FLOATING_POINT_EXCEPTION_OPS = frozenset(
     [
-        "nn.functional.pixel_unshuffle"
-        "nn.functional.pixel_shuffle",
+        "nn.functional.pixel_unshuffle", "nn.functional.pixel_shuffle",
         "take",
     ]
 )
