@@ -1,0 +1,40 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  "0 3 * * *"
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  run-survey:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        opset: [9, 10, 11, 12, 13, 14, 15, 16, 17]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4.2.0
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run survey
+        run: python op_matrix/op_survey.py -opset ${{ matrix.opset }}
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v3
+        with:
+          name: op_survey_opset_${{ matrix.opset }}
+          path: output/op_survey_opset_${{ matrix.opset }}.json
+          retention-days: 5
