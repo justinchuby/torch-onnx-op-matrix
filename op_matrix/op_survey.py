@@ -1,10 +1,11 @@
 """Test consistency between torch.onnx exported operators and aten operators."""
 
-import gc
+import argparse
 import itertools
 import json
 import dataclasses
 import io
+import os
 import traceback
 from typing import Any, Dict, Iterator, List, Optional, Tuple
 import warnings
@@ -78,6 +79,8 @@ def produce_op_sample() -> Iterator[
                     if i >= LIMIT_SAMPLE_PER_OP:
                         break
                     model = SingleOpModel(op_info.op, sample.kwargs)
+                    # Run the model to make sure PyTorch can run it first
+                    model(sample.input, *sample.args)
                     yield op_info, model, (
                         sample.input,
                         *sample.args,
@@ -217,23 +220,31 @@ def test_op_consistency(opset_version: int, all_samples) -> List[OpTestResult]:
     return results
 
 
-def main():
+def main(args):
+    opset_version = args.opset_version
     collection = ResultCollection()
 
     print("Producing samples...")
     all_samples = list(produce_op_sample())
 
-    for opset_version in TESTED_OPSETS:
-        print(f"Testing opset {opset_version}")
-        results = test_op_consistency(opset_version, all_samples)
-        for result in results:
-            collection.add(result)
-        gc.collect()
+    print(f"Testing opset {opset_version}")
+    results = test_op_consistency(opset_version, all_samples)
+    for result in results:
+        collection.add(result)
     # Save results to a json file
     print("Saving results...")
-    with open("op_survey.json", "w") as f:
+    out_dir = "output"
+    os.makedirs(out_dir, exist_ok=True)
+    with open(os.path.join(out_dir, f"op_survey_opset_{opset_version}.json"), "w") as f:
         json.dump(collection.as_dict(), f, indent=2)
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--opset",
+        type=int,
+        default=_constants.ONNX_MAX_OPSET,
+        help="The opset version to test.",
+    )
+    main(parser.parse_args())
