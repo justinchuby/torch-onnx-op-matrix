@@ -174,25 +174,18 @@ def test_op_consistency(opset_version: int) -> List[OpTestResult]:
     return results
 
 
-def main(args):
-    opset_version = args.opset_version
-    print(f"Testing opset version {opset_version}")
-
-    results = test_op_consistency(opset_version)
+def main():
     collection = ResultCollection()
-    for result in results:
-        collection.add(result)
+
+    for opset_version in TESTED_OPSETS:
+        print(f"Testing opset {opset_version}")
+        results = test_op_consistency(opset_version)
+        for result in results:
+            collection.add(result)
     # Save results to a json file
     with open("op_survey.json", "w") as f:
         json.dump(collection.as_dict(), f, indent=2)
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--opset-version",
-        type=int,
-        default=MAX_ONNX_OPSET_VERSION,
-        help="Opset version to test",
-    )
-    main(parser.parse_args())
+    main()
