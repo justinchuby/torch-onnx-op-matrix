@@ -235,8 +235,14 @@ def main(args):
     print("Saving results...")
     out_dir = "output"
     os.makedirs(out_dir, exist_ok=True)
+
+    results_dict = {
+        "torch_version": torch.__version__,
+        "onnx_version": onnx.__version__,
+        "test_results": collection.as_dict(),
+    }
     with open(os.path.join(out_dir, f"op_survey_opset_{opset_version}.json"), "w") as f:
-        json.dump(collection.as_dict(), f, indent=2)
+        json.dump(results_dict, f, indent=2)
 
 
 if __name__ == "__main__":
