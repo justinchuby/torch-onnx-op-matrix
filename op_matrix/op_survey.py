@@ -27,6 +27,13 @@ TESTED_OPSETS = range(MIN_ONNX_OPSET_VERSION, MAX_ONNX_OPSET_VERSION + 1)
 
 LIMIT_SAMPLE_PER_OP = 10
 
+FLOATING_POINT_EXCEPTION_OPS = frozenset(
+    [
+        "nn.functional.pixel_shuffle",
+        "take",
+    ]
+)
+
 
 TESTED_DTYPES = (
     torch.bool,
@@ -69,8 +76,8 @@ def produce_op_sample() -> Iterator[
         opinfo_definitions.op_db,
     )
     for op_info in op_db:
-        if op_info.name == "take":
-            # For some reason we have Floating point exception(core dumped)
+        if op_info.name in FLOATING_POINT_EXCEPTION_OPS:
+            # For some reason we have Floating point exception(core dumped) in github actions
             continue
         for dtype in TESTED_DTYPES:
             try:
@@ -212,12 +219,14 @@ def test_op_consistency(opset_version: int, all_samples) -> List[OpTestResult]:
     """Test that torch.onnx export produces the same results as aten."""
     results = []
 
-    for i, (op_info, model, inputs, dtype, sample) in (pbar := tqdm.tqdm(
-        enumerate(all_samples),
-        total=len(all_samples),
-        desc=f"Testing opset {opset_version}",
-    )):
-        pbar.set_postfix({"op": op_info.name})
+    for i, (op_info, model, inputs, dtype, sample) in (
+        pbar := tqdm.tqdm(
+            enumerate(all_samples),
+            total=len(all_samples),
+            desc=f"Testing opset {opset_version}",
+        )
+    ):
+        pbar.set_postfix({"op": op_info.name, "dtype": dtype})
         result = check_single_op(op_info, model, inputs, dtype, opset_version, sample)
         results.append(result)
 
