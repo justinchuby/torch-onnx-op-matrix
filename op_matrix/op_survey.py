@@ -227,7 +227,7 @@ def test_op_consistency(opset_version: int, all_samples) -> List[OpTestResult]:
             desc=f"Testing opset {opset_version}",
         )
     ):
-        pbar.set_postfix({"op": op_info.name, "dtype": dtype})
+        pbar.set_postfix({"dtype": dtype, "op": op_info.name})
         result = check_single_op(op_info, model, inputs, dtype, opset_version, sample)
         results.append(result)
 
