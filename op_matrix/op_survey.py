@@ -1,10 +1,9 @@
 """Test consistency between torch.onnx exported operators and aten operators."""
 
-import argparse
 import json
 import dataclasses
 import io
-from typing import Dict, Iterator, List, Optional, Tuple
+from typing import Any, Dict, Iterator, List, Optional, Tuple
 
 import onnx
 import torch
@@ -53,7 +52,9 @@ class SingleOpModel(torch.nn.Module):
         return self.operator(*args, **self.kwargs)
 
 
-def produce_op_sample() -> Iterator[Tuple[str, torch.nn.Module, tuple, torch.dtype]]:
+def produce_op_sample() -> Iterator[
+    Tuple[str, torch.nn.Module, tuple, torch.dtype, Any]
+]:
     """Produce samples of all operators to test."""
 
     op_db = common_methods_invocations.op_db
@@ -66,7 +67,10 @@ def produce_op_sample() -> Iterator[Tuple[str, torch.nn.Module, tuple, torch.dty
                     model = SingleOpModel(op_info.op, sample.kwargs)
                     # Try to run it once. If it fails, skip it.
                     model(sample.input, *sample.args)
-                    yield op_info.name, model, (sample.input, *sample.args), dtype
+                    yield op_info.name, model, (
+                        sample.input,
+                        *sample.args,
+                    ), dtype, sample
             except Exception:
                 # Skip operators that don't support the dtype
                 # E.g. "normal_kernel_cpu" not implemented for 'Bool'
@@ -82,17 +86,19 @@ class OpTestResult:
     dtype: torch.dtype
     operator: str
     exception: Optional[Exception]
+    inputs: Tuple
+    kwargs: Dict[str, Any]
 
 
 class ResultCollection:
     def __init__(self) -> None:
-        self.collection: Dict[Tuple[str, str, int], List[Exception | None]] = {}
+        self.collection: Dict[Tuple[str, str, int], List[OpTestResult]] = {}
 
     def add(self, result: OpTestResult) -> None:
         key = (result.operator, str(result.dtype), result.opset)
         if key not in self.collection:
             self.collection[key] = []
-        self.collection[key].append(result.exception)
+        self.collection[key].append(result)
 
     def as_dict(self) -> List:
         """Convert the collection to a dict."""
@@ -103,9 +109,16 @@ class ResultCollection:
                 "dtype": key[1],
                 "opset": key[2],
                 "exceptions": [
-                    (type(e).__name__, str(e)) for e in value if e is not None
+                    {
+                        "type": type(result.exception).__name__,
+                        "message": str(result.exception),
+                        "inputs": repr(result.inputs),
+                        "kwargs": repr(result.kwargs),
+                    }
+                    for result in value
+                    if result.exception is not None
                 ],
-                "correct": value.count(None),
+                "correct": [result.exception for result in value].count(None),
                 "total": len(value),
             }
             for key, value in self.collection.items()
@@ -118,6 +131,7 @@ def check_single_op(
     inputs: tuple,
     dtype: torch.dtype,
     opset_version: int,
+    sample: Any,
 ) -> OpTestResult:
     # Export the model
     model_buffer = io.BytesIO()
@@ -138,6 +152,8 @@ def check_single_op(
             dtype=dtype,
             operator=op_name,
             exception=e,
+            inputs=inputs,
+            kwargs=sample.kwargs,
         )
 
     # Check the model with ONNX
@@ -151,6 +167,8 @@ def check_single_op(
             dtype=dtype,
             operator=op_name,
             exception=e,
+            inputs=inputs,
+            kwargs=sample.kwargs,
         )
 
     return OpTestResult(
@@ -158,6 +176,8 @@ def check_single_op(
         dtype=dtype,
         operator=op_name,
         exception=None,
+        inputs=inputs,
+        kwargs=sample.kwargs,
     )
 
 
@@ -167,8 +187,8 @@ def test_op_consistency(opset_version: int) -> List[OpTestResult]:
     print("Producing samples...")
     all_samples = produce_op_sample()
 
-    for i, inputs in tqdm.tqdm(enumerate(all_samples)):
-        result = check_single_op(*inputs, opset_version)
+    for i, (op_name, model, inputs, dtype, sample) in tqdm.tqdm(enumerate(all_samples)):
+        result = check_single_op(op_name, model, inputs, dtype, opset_version, sample)
         results.append(result)
 
     return results
