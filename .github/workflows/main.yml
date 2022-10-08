@@ -16,12 +16,13 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   run-survey:
-    runs-on: ubuntu-latest
-
     strategy:
       fail-fast: false
       matrix:
         opset: [9, 10, 11, 12, 13, 14, 15, 16, 17]
+        os: ["ubuntu-latest", "macos-latest"]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v3
@@ -38,6 +39,6 @@ jobs:
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
         with:
-          name: op_survey_opset_${{ matrix.opset }}
+          name: op_survey_opset_${{ matrix.opset }}_${{ matrix.os }}
           path: output/op_survey_opset_${{ matrix.opset }}.json
           retention-days: 5
