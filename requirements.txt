@@ -1,2 +1,9 @@
 onnx
---pre torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/nightly/cpu
+expecttest
+tqdm
+--pre -f https://download.pytorch.org/whl/nightly/cpu
+torch
+--pre -f https://download.pytorch.org/whl/nightly/cpu
+torchvision
+--pre -f https://download.pytorch.org/whl/nightly/cpu
+torchaudio
