@@ -2,3 +2,4 @@ onnx
 expecttest
 tqdm
 PyYAML
+beartype

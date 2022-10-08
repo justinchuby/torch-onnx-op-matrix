@@ -31,7 +31,7 @@ jobs:
       - name: Install dependencies
         run: bash install.sh
       - name: Run survey
-        run: python op_matrix/op_survey.py -opset ${{ matrix.opset }}
+        run: python op_matrix/op_survey.py --opset ${{ matrix.opset }}
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
         with:
