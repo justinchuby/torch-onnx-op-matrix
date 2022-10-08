@@ -1,9 +1,4 @@
 onnx
 expecttest
 tqdm
---pre -f https://download.pytorch.org/whl/nightly/cpu
-torch
---pre -f https://download.pytorch.org/whl/nightly/cpu
-torchvision
---pre -f https://download.pytorch.org/whl/nightly/cpu
-torchaudio
+yaml
