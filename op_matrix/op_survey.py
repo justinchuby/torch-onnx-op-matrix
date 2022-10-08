@@ -67,17 +67,11 @@ def produce_op_sample() -> Iterator[
     )
     for op_info in op_db:
         for dtype in TESTED_DTYPES:
-            if op_info.name == "nn.functional.conv2d" or op_info.aten_name == "conv2d":
-                # FIXME: Why do we not see nn.functional.conv2d?
-                print(ValueError(op_info))
-                exit()
             try:
                 for sample in op_info.sample_inputs(
                     device="cpu", dtype=dtype, requires_grad=False
                 )[:LIMIT_SAMPLE_PER_OP]:
                     model = SingleOpModel(op_info.op, sample.kwargs)
-                    # Try to run it once. If it fails, skip it.
-                    model(sample.input, *sample.args)
                     yield op_info, model, (
                         sample.input,
                         *sample.args,
