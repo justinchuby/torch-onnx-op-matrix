@@ -209,11 +209,12 @@ def test_op_consistency(opset_version: int, all_samples) -> List[OpTestResult]:
     """Test that torch.onnx export produces the same results as aten."""
     results = []
 
-    for i, (op_info, model, inputs, dtype, sample) in tqdm.tqdm(
+    for i, (op_info, model, inputs, dtype, sample) in (pbar := tqdm.tqdm(
         enumerate(all_samples),
         total=len(all_samples),
         desc=f"Testing opset {opset_version}",
-    ):
+    )):
+        pbar.set_postfix({"op": op_info.name})
         result = check_single_op(op_info, model, inputs, dtype, opset_version, sample)
         results.append(result)
 
