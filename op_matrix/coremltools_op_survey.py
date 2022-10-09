@@ -12,14 +12,6 @@ from torch.testing._internal.opinfo.core import OpInfo
 
 import common
 
-FLOATING_POINT_EXCEPTION_OPS = frozenset(
-    [
-        "nn.functional.pixel_unshuffle",
-        "nn.functional.pixel_shuffle",
-        "take",
-    ]
-)
-
 
 def check_single_op(
     op_info: OpInfo,
@@ -78,9 +70,6 @@ def test_op_consistency(all_samples) -> List[common.OpTestResult]:
         pbar.set_postfix({"dtype": dtype, "op": op_info.name})
         result = check_single_op(op_info, model, inputs, dtype, sample)
         results.append(result)
-
-        if i > 100:
-            break
 
     return results
 

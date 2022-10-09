@@ -15,7 +15,7 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  run-survey:
+  run-onnx-survey:
     strategy:
       fail-fast: false
       matrix:
@@ -31,14 +31,39 @@ jobs:
         with:
           python-version: "3.10"
       - name: Install dependencies
-        run: bash install.sh
+        run: |
+          pip install --user pipenv
+          bash install.sh
       - name: Run survey
         run: |
           export TORCH_ONNX_EXPERIMENTAL_RUNTIME_TYPE_CHECK=ERRORS
-          python op_matrix/op_survey.py --opset ${{ matrix.opset }}
+          pipenv run python op_matrix/onnx_op_survey.py --opset ${{ matrix.opset }}
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
         with:
           name: op_survey_opset_${{ matrix.opset }}_${{ matrix.os }}
           path: output/op_survey_opset_${{ matrix.opset }}.json
-          retention-days: 5
+          retention-days: 3
+
+  run-coremltools-survey:
+    runs-on: "macos-latest"
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4.2.0
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          pip install --user pipenv
+          bash install.sh
+      - name: Run survey
+        run: |
+          pipenv run python op_matrix/coremltools_op_survey.py
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v3
+        with:
+          name: op_survey_coremltools
+          path: output/op_survey_coremltools.json
+          retention-days: 3

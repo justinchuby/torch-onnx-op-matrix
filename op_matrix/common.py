@@ -44,10 +44,11 @@ class SingleOpModel(torch.nn.Module):
         return self.operator(*args, **self.kwargs)
 
 
-def produce_op_sample(skip_ops: AbstractSet[str]) -> Iterator[
+def produce_op_sample(skip_ops: AbstractSet[str] | None = None) -> Iterator[
     Tuple[OpInfo, torch.nn.Module, tuple, torch.dtype, Any]
 ]:
     """Produce samples of all operators to test."""
+    skip_ops = skip_ops or set()
 
     op_db = itertools.chain(
         common_methods_invocations.op_db,
