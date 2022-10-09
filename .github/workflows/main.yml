@@ -43,7 +43,7 @@ jobs:
           path: output/op_survey_opset_${{ matrix.opset }}.json
           retention-days: 3
   run-fx-survey:
-    runs-on: "macos-latest"
+    runs-on: "ubuntu-latest"
 
     steps:
       - uses: actions/checkout@v3
