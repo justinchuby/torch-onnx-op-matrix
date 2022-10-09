@@ -28,7 +28,7 @@ def check_single_op(
         # FIXME: Doesn't work now because of
         # Proxy object cannot be iterated. This can be attempted when the Proxy is used in a loop or as a *args or **kwargs function argument. See the torch.fx docs on pytorch.org for a more detailed explanation of what types of control flow can be traced, and check out the Proxy docstring for help troubleshooting Proxy iteration errors
         return common.OpTestResult(
-            opset="torch_fx",
+            opset="fx",
             dtype=dtype,
             operator=op_info.name,
             aten_name=op_info.aten_name,
@@ -39,7 +39,7 @@ def check_single_op(
         )
 
     return common.OpTestResult(
-        opset="torch_fx",
+        opset="fx",
         dtype=dtype,
         operator=op_info.name,
         aten_name=op_info.aten_name,
@@ -72,7 +72,7 @@ def main():
     collection = common.ResultCollection()
 
     print("Producing samples...")
-    all_samples = list(common.produce_op_sample())
+    all_samples = list(common.produce_op_sample(target="fx"))
 
     results = test_op_consistency(all_samples)
     for result in results:
@@ -86,7 +86,7 @@ def main():
         "torch_version": torch.__version__,
         "test_results": collection.as_dict(),
     }
-    with open(os.path.join(out_dir, f"op_survey_torch_fx.json"), "w") as f:
+    with open(os.path.join(out_dir, f"op_survey_fx.json"), "w") as f:
         json.dump(results_dict, f, indent=2)
 
 

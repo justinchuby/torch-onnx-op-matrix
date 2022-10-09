@@ -42,3 +42,25 @@ jobs:
           name: op_survey_opset_${{ matrix.opset }}_${{ matrix.os }}
           path: output/op_survey_opset_${{ matrix.opset }}.json
           retention-days: 3
+  run-fx-survey:
+    runs-on: "macos-latest"
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4.2.0
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          pip install --user pipenv
+          bash install.sh
+      - name: Run survey
+        run: |
+          pipenv run python op_matrix/fx_op_survey.py
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v3
+        with:
+          name: op_survey_fx
+          path: output/op_survey_fx.json
+          retention-days: 3

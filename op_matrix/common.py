@@ -2,8 +2,8 @@
 
 import itertools
 import dataclasses
+import logging
 from typing import Any, Dict, Iterator, List, Optional, AbstractSet, Tuple
-import warnings
 
 import torch
 from torch.testing._internal import common_methods_invocations
@@ -44,9 +44,81 @@ class SingleOpModel(torch.nn.Module):
         return self.operator(*args, **self.kwargs)
 
 
-def produce_op_sample(skip_ops: AbstractSet[str] | None = None) -> Iterator[
-    Tuple[OpInfo, torch.nn.Module, tuple, torch.dtype, Any]
-]:
+class SingleOpModelZeroInputs(torch.nn.Module):
+    """Test model to wrap around a single op for export."""
+
+    def __init__(self, op, kwargs):
+        super().__init__()
+        self.operator = op
+        self.kwargs = kwargs
+
+    def forward(self):
+        return self.operator(**self.kwargs)
+
+
+class SingleOpModelOneInput(torch.nn.Module):
+    """Test model to wrap around a single op for export."""
+
+    def __init__(self, op, kwargs):
+        super().__init__()
+        self.operator = op
+        self.kwargs = kwargs
+
+    def forward(self, x):
+        return self.operator(x, **self.kwargs)
+
+
+class SingleOpModelTwoInputs(torch.nn.Module):
+    """Test model to wrap around a single op for export."""
+
+    def __init__(self, op, kwargs):
+        super().__init__()
+        self.operator = op
+        self.kwargs = kwargs
+
+    def forward(self, x, y):
+        return self.operator(x, y, **self.kwargs)
+
+
+class SingleOpModelThreeInputs(torch.nn.Module):
+    """Test model to wrap around a single op for export."""
+
+    def __init__(self, op, kwargs):
+        super().__init__()
+        self.operator = op
+        self.kwargs = kwargs
+
+    def forward(self, x, y, z):
+        return self.operator(x, y, z, **self.kwargs)
+
+
+class SingleOpModelFourInputs(torch.nn.Module):
+    """Test model to wrap around a single op for export."""
+
+    def __init__(self, op, kwargs):
+        super().__init__()
+        self.operator = op
+        self.kwargs = kwargs
+
+    def forward(self, x, y, z):
+        return self.operator(x, y, z, **self.kwargs)
+
+
+class SingleOpModelFiveInputs(torch.nn.Module):
+    """Test model to wrap around a single op for export."""
+
+    def __init__(self, op, kwargs):
+        super().__init__()
+        self.operator = op
+        self.kwargs = kwargs
+
+    def forward(self, x, y, z):
+        return self.operator(x, y, z, **self.kwargs)
+
+
+def produce_op_sample(
+    skip_ops: AbstractSet[str] | None = None, target: str | None = None
+) -> Iterator[Tuple[OpInfo, torch.nn.Module, tuple, torch.dtype, Any]]:
     """Produce samples of all operators to test."""
     skip_ops = skip_ops or set()
 
@@ -67,18 +139,39 @@ def produce_op_sample(skip_ops: AbstractSet[str] | None = None) -> Iterator[
                 ):
                     if i >= LIMIT_SAMPLE_PER_OP:
                         break
-                    model = SingleOpModel(op_info.op, sample.kwargs)
-                    # Run the model to make sure PyTorch can run it first
-                    model(sample.input, *sample.args)
-                    yield op_info, model, (
+
+                    inputs = (
                         sample.input,
                         *sample.args,
-                    ), dtype, sample
+                    )
+                    model: torch.nn.Module
+                    if target == "fx":
+                        if len(inputs) == 0:
+                            model = SingleOpModelZeroInputs(op_info.op, sample.kwargs)
+                        elif len(inputs) == 1:
+                            model = SingleOpModelOneInput(op_info.op, sample.kwargs)
+                        elif len(inputs) == 2:
+                            model = SingleOpModelTwoInputs(op_info.op, sample.kwargs)
+                        elif len(inputs) == 3:
+                            model = SingleOpModelThreeInputs(op_info.op, sample.kwargs)
+                        elif len(inputs) == 4:
+                            model = SingleOpModelFourInputs(op_info.op, sample.kwargs)
+                        elif len(inputs) == 5:
+                            model = SingleOpModelFiveInputs(op_info.op, sample.kwargs)
+                        else:
+                            raise ValueError(
+                                "torch_fx model requiring >5 inputs is ignored"
+                            )
+                    else:
+                        model = SingleOpModel(op_info.op, sample.kwargs)
+                    # Run the model to make sure PyTorch can run it first
+                    model(*inputs)
+                    yield op_info, model, inputs, dtype, sample
             except Exception as e:
                 # Skip operators that don't support the dtype
                 # E.g. "normal_kernel_cpu" not implemented for 'Bool'
                 # Or Got unsupported ScalarType ComplexHalf
-                warnings.warn(f"!!!Skipping {op_info.name} for {dtype}: {e}")
+                logging.warn(f"!!!Skipping {op_info.name} for {dtype}: {e}")
 
 
 @dataclasses.dataclass
