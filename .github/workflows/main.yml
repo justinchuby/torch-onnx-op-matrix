@@ -30,12 +30,11 @@ jobs:
           python-version: "3.10"
       - name: Install dependencies
         run: |
-          pip install pipenv
           bash install.sh
       - name: Run survey
         run: |
           export TORCH_ONNX_EXPERIMENTAL_RUNTIME_TYPE_CHECK=ERRORS
-          pipenv run python op_matrix/onnx_op_survey.py --opset ${{ matrix.opset }}
+          python op_matrix/onnx_op_survey.py --opset ${{ matrix.opset }}
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
         with:
@@ -53,11 +52,10 @@ jobs:
           python-version: "3.10"
       - name: Install dependencies
         run: |
-          pip install pipenv
           bash install.sh
       - name: Run survey
         run: |
-          pipenv run python op_matrix/fx_op_survey.py
+          python op_matrix/fx_op_survey.py
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
         with:
