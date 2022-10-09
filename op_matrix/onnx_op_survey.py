@@ -47,7 +47,7 @@ def check_single_op(
         )
     except Exception as e:
         # TODO: Test in place variants as well
-        return OpTestResult(
+        return common.OpTestResult(
             opset=opset_version,
             dtype=dtype,
             operator=op_info.name,
@@ -62,8 +62,8 @@ def check_single_op(
     model_buffer.seek(0)
     onnx_model = onnx.load(model_buffer)
     try:
-        onnx.checker.check_model(onnx_model)
-    except onnx.checker.ValidationError as e:
+        onnx.checker.check_model(onnx_model)  # type: ignore
+    except onnx.checker.ValidationError as e:  # type: ignore
         return common.OpTestResult(
             opset=opset_version,
             dtype=dtype,
