@@ -13,7 +13,7 @@ import tqdm
 from torch.onnx import _constants
 from torch.testing._internal.opinfo.core import OpInfo
 
-from op_matrix import common
+import common
 
 
 FLOATING_POINT_EXCEPTION_OPS = frozenset(
@@ -110,7 +110,7 @@ def main(args):
     collection = common.ResultCollection()
 
     print("Producing samples...")
-    all_samples = list(common.produce_op_sample())
+    all_samples = list(common.produce_op_sample(FLOATING_POINT_EXCEPTION_OPS))
 
     print(f"Testing opset {opset_version}")
     results = test_op_consistency(opset_version, all_samples)

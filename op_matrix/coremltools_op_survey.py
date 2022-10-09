@@ -10,7 +10,7 @@ import torch
 import tqdm
 from torch.testing._internal.opinfo.core import OpInfo
 
-from op_matrix import common
+import common
 
 FLOATING_POINT_EXCEPTION_OPS = frozenset(
     [

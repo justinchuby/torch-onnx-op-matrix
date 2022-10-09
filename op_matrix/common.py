@@ -2,7 +2,7 @@
 
 import itertools
 import dataclasses
-from typing import Any, Dict, Iterator, List, Optional, Tuple
+from typing import Any, Dict, Iterator, List, Optional, AbstractSet, Tuple
 import warnings
 
 import torch
@@ -44,7 +44,7 @@ class SingleOpModel(torch.nn.Module):
         return self.operator(*args, **self.kwargs)
 
 
-def produce_op_sample() -> Iterator[
+def produce_op_sample(skip_ops: AbstractSet[str]) -> Iterator[
     Tuple[OpInfo, torch.nn.Module, tuple, torch.dtype, Any]
 ]:
     """Produce samples of all operators to test."""
@@ -54,7 +54,7 @@ def produce_op_sample() -> Iterator[
         opinfo_definitions.op_db,
     )
     for op_info in op_db:
-        if op_info.name in FLOATING_POINT_EXCEPTION_OPS:
+        if op_info.name in skip_ops:
             # For some reason we have Floating point exception(core dumped) in github actions
             continue
         for dtype in TESTED_DTYPES:
