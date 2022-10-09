@@ -1,4 +1,4 @@
-"""Test consistency between torch.onnx exported operators and aten operators."""
+"""Survey coremltools converter supported models."""
 
 import json
 import os

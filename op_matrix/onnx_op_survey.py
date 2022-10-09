@@ -1,4 +1,4 @@
-"""Test consistency between torch.onnx exported operators and aten operators."""
+"""Survey torch.onnx supported models."""
 
 import argparse
 import json
