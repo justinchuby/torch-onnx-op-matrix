@@ -1,0 +1,30 @@
+name: CoreML Tools
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  run-coremltools-survey:
+    runs-on: "macos-latest"
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4.2.0
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          pip install --user pipenv
+          bash install.sh
+      - name: Run survey
+        run: |
+          pipenv run python op_matrix/coremltools_op_survey.py
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v3
+        with:
+          name: op_survey_coremltools
+          path: output/op_survey_coremltools.json
+          retention-days: 7
