@@ -3,3 +3,4 @@ expecttest
 tqdm
 PyYAML
 beartype
+coremltools
