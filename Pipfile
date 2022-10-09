@@ -1,0 +1,23 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[[source]]
+url = "https://download.pytorch.org/whl/nightly/cpu"
+verify_ssl = true
+name = "torch-nightly"
+
+[packages]
+onnx = "*"
+expecttest = "*"
+tqdm = "*"
+pyyaml = "*"
+beartype = "*"
+coremltools = "*"
+torch = {version="*", index="torch-nightly"}
+torchvision = {version="*", index="torch-nightly"}
+torchaudio = {version="*", index="torch-nightly"}
+
+[pipenv]
+allow_prereleases = true
