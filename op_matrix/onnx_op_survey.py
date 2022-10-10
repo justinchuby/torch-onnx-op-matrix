@@ -64,7 +64,7 @@ def check_single_op(
     model_buffer.seek(0)
     onnx_model = onnx.load(model_buffer)
     try:
-        onnx.checker.check_model(onnx_model)  # type: ignore
+        onnx.checker.check_model(onnx_model, full_check=True)  # type: ignore
     except onnx.checker.ValidationError as e:  # type: ignore
         return common.OpTestResult(
             opset=opset_version,
