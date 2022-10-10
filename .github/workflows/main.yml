@@ -6,7 +6,7 @@ on:
   schedule:
     # * is a special character in YAML so you have to quote this string
     # Pytorch nightly is published around 5 hours after midnight PT
-    - cron:  "30 11 * * *"
+    - cron:  "30 11 * * 0"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -40,7 +40,7 @@ jobs:
         with:
           name: op_survey_opset_${{ matrix.opset }}_${{ matrix.os }}
           path: output/op_survey_opset_${{ matrix.opset }}.json
-          retention-days: 3
+          retention-days: 14
   run-fx-survey:
     runs-on: "ubuntu-latest"
 
@@ -61,4 +61,4 @@ jobs:
         with:
           name: op_survey_fx
           path: output/op_survey_fx.json
-          retention-days: 3
+          retention-days: 14
