@@ -100,8 +100,8 @@ class SingleOpModelFourInputs(torch.nn.Module):
         self.operator = op
         self.kwargs = kwargs
 
-    def forward(self, x, y, z):
-        return self.operator(x, y, z, **self.kwargs)
+    def forward(self, x, y, z, a):
+        return self.operator(x, y, z, a, **self.kwargs)
 
 
 class SingleOpModelFiveInputs(torch.nn.Module):
@@ -112,8 +112,8 @@ class SingleOpModelFiveInputs(torch.nn.Module):
         self.operator = op
         self.kwargs = kwargs
 
-    def forward(self, x, y, z):
-        return self.operator(x, y, z, **self.kwargs)
+    def forward(self, x, y, z, a, b):
+        return self.operator(x, y, z, a, b, **self.kwargs)
 
 
 def produce_op_sample(
@@ -122,10 +122,8 @@ def produce_op_sample(
     """Produce samples of all operators to test."""
     skip_ops = skip_ops or set()
 
-    op_db = itertools.chain(
-        common_methods_invocations.op_db,
-        opinfo_definitions.op_db,
-    )
+    # opinfo_definitions.op_db is part of common_methods_invocations.op_db
+    op_db = common_methods_invocations.op_db
     for op_info in op_db:
         if op_info.name in skip_ops:
             # For some reason we have Floating point exception(core dumped) in github actions
