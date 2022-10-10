@@ -3,6 +3,8 @@
 import argparse
 import json
 import io
+import logging
+import multiprocessing
 import os
 import traceback
 from typing import Any, List
@@ -105,8 +107,7 @@ def test_op_consistency(opset_version: int, all_samples) -> List[common.OpTestRe
     return results
 
 
-def main(args):
-    opset_version = args.opset
+def run_one_opset(opset_version: int) -> None:
     collection = common.ResultCollection()
 
     print("Producing samples...")
@@ -130,6 +131,20 @@ def main(args):
         json.dump(results_dict, f, indent=2)
 
 
+def main(args):
+    opset_version = args.opset
+    jobs = args.jobs
+
+    if opset_version == -1:
+        # Test all opsets
+        opset_versions = range(9, _constants.ONNX_MAX_OPSET + 1)
+    else:
+        opset_versions = [opset_version]
+
+    with multiprocessing.Pool(jobs) as pool:
+        pool.map(run_one_opset, opset_versions)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -137,5 +152,11 @@ if __name__ == "__main__":
         type=int,
         default=_constants.ONNX_MAX_OPSET,
         help="The opset version to test.",
+    )
+    parser.add_argument(
+        "--jobs",
+        type=int,
+        default=1,
+        help="The number of processes to use for testing.",
     )
     main(parser.parse_args())
