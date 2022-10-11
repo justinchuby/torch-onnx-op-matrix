@@ -1,6 +1,6 @@
 # `torch.onnx` op support matrix
 
-[![CI](https://github.com/justinchuby/torch-onnx-op-matrix/actions/workflows/main.yml/badge.svg)](https://github.com/justinchuby/torch-onnx-op-matrix/actions/workflows/main.yml) [![CoreML Tools](https://github.com/justinchuby/torch-onnx-op-matrix/actions/workflows/coremltools.yml/badge.svg)](https://github.com/justinchuby/torch-onnx-op-matrix/actions/workflows/coremltools.yml)  
+[![CI](https://github.com/justinchuby/torch-onnx-op-matrix/actions/workflows/main.yml/badge.svg)](https://github.com/justinchuby/torch-onnx-op-matrix/actions/workflows/main.yml) [![Test](https://github.com/justinchuby/torch-onnx-op-matrix/actions/workflows/test.yml/badge.svg)](https://github.com/justinchuby/torch-onnx-op-matrix/actions/workflows/test.yml) [![CoreML Tools](https://github.com/justinchuby/torch-onnx-op-matrix/actions/workflows/coremltools.yml/badge.svg)](https://github.com/justinchuby/torch-onnx-op-matrix/actions/workflows/coremltools.yml)  
 `^` Obtain the data here under `artifacts`
 
 
