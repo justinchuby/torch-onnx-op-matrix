@@ -1,0 +1,50 @@
+name: Test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  test-onnx-survey:
+    strategy:
+      fail-fast: false
+      matrix:
+        opset: [17]
+
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4.2.0
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          bash install.sh
+      - name: Run survey
+        run: |
+          export TORCH_ONNX_EXPERIMENTAL_RUNTIME_TYPE_CHECK=ERRORS
+          python op_matrix/onnx_op_survey.py --opset ${{ matrix.opset }} --debug
+
+  test-fx-survey:
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4.2.0
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          bash install.sh
+      - name: Run survey
+        run: |
+          python op_matrix/fx_op_survey.py

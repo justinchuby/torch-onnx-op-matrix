@@ -26,6 +26,8 @@ FLOATING_POINT_EXCEPTION_OPS = frozenset(
     ]
 )
 
+debug = False
+
 
 def check_single_op(
     op_info: OpInfo,
@@ -104,6 +106,11 @@ def test_op_consistency(opset_version: int, all_samples) -> List[common.OpTestRe
         result = check_single_op(op_info, model, inputs, dtype, opset_version, sample)
         results.append(result)
 
+        if debug:
+            print(f"Result for {op_info.name} is {result}")
+            if i > 10:
+                break
+
     return results
 
 
@@ -134,6 +141,8 @@ def run_one_opset(opset_version: int) -> None:
 def main(args):
     opset_version = args.opset
     jobs = args.jobs
+    global debug
+    debug = args.debug
 
     if opset_version == -1:
         # Test all opsets
@@ -158,5 +167,10 @@ if __name__ == "__main__":
         type=int,
         default=1,
         help="The number of processes to use for testing.",
+    )
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Debug run.",
     )
     main(parser.parse_args())
