@@ -47,4 +47,20 @@ jobs:
           bash install.sh
       - name: Run survey
         run: |
-          python op_matrix/fx_op_survey.py
+          python op_matrix/fx_op_survey.py --debug
+
+  test-jit-survey:
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4.2.0
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          bash install.sh
+      - name: Run survey
+        run: |
+          python op_matrix/jit_op_survey.py --debug
