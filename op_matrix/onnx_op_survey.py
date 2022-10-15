@@ -3,7 +3,6 @@
 import argparse
 import json
 import io
-import logging
 import multiprocessing
 import os
 import traceback
@@ -43,7 +42,7 @@ def check_single_op(
     try:
         # TODO: Catch the warnings
         torch.onnx.export(
-            model,
+            model.eval(),
             inputs,
             model_buffer,
             opset_version=opset_version,
