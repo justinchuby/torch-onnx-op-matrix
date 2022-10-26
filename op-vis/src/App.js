@@ -1,11 +1,11 @@
 import './App.css';
-import MyAwesomeTable from './Table';
+import OpMatrixTable from './Table';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <MyAwesomeTable />
+        <OpMatrixTable />
       </header>
     </div>
   );
