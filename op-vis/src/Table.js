@@ -1,25 +1,26 @@
 import React from "react";
 import GridTable from '@nadavshaar/react-grid-table';
+import opset9Data from './data/op_survey_opset_9.json';
 
 
 const CellRenderer = ({ tableManager, value, field, data, column, colIndex, rowIndex }) => {
     let totalConnt;
-    let successCount;
+    let correctCount;
 
     if (data[column.field]) {
         totalConnt = data[column.field].total_count;
-        successCount = data[column.field].success_count;
+        correctCount = data[column.field].correct_count;
     } else {
         totalConnt = 0;
-        successCount = 0;
+        correctCount = 0;
     }
 
     let supportClass;
     if (totalConnt === 0) {
         supportClass = 'support-unknown';
-    } else if (successCount === totalConnt) {
+    } else if (correctCount === totalConnt) {
         supportClass = 'support-yes';
-    } else if (successCount === 0) {
+    } else if (correctCount === 0) {
         supportClass = 'support-no';
     } else {
         supportClass = 'support-partial';
@@ -27,71 +28,73 @@ const CellRenderer = ({ tableManager, value, field, data, column, colIndex, rowI
     return (
         <div className={`rgt-cell ${supportClass}`}>
             <div className={'rgt-cell-inner'} style={{display: 'flex', alignItems: 'center', overflow: 'hidden'}}>
-                <span className='rgt-text-truncate support-text' >{successCount} / {totalConnt}</span>
+                <span className='rgt-text-truncate support-text' >{correctCount} / {totalConnt}</span>
             </div>
         </div>
     );
 }
 
 
-const repeat = (arr, n) => Array(n).fill(arr).flat();
+// const repeat = (arr, n) => Array(n).fill(arr).flat();
 
-const rows = repeat([
-    {
-        "id": 1,
-        "operation": "aten::add",
-        "uint8": {
-            "success_count": 6,
-            "total_count": 10,
-        },
-        "float32": {
-            "success_count": 5,
-            "total_count": 10,
-        }
-    },
-    {
-        "id": 2,
-        "operation": "aten::sub",
-        "uint8": {
-            "success_count": 10,
-            "total_count": 10,
-        },
-        "float32": {
-            "success_count": 10,
-            "total_count": 10,
-        }
-    },
-    {
-        "id": 3,
-        "operation": "aten::matmul",
-        "uint8": {
-            "success_count": 0,
-            "total_count": 10,
-        },
-        "float32": {
-            "success_count": 0,
-            "total_count": 10,
-        }
-    },
-    {
-        "id": 3,
-        "operation": "aten::conv2d",
-        "uint8": {
-            "success_count": 0,
-            "total_count": 0,
-        },
-        "float32": {
-            "success_count": 5,
-            "total_count": 10,
-        }
-    },
-], 1000);
+// const rows = repeat([
+//     {
+//         "id": 1,
+//         "operator": "aten::add",
+//         "uint8": {
+//             "correct_count": 6,
+//             "total_count": 10,
+//         },
+//         "float32": {
+//             "correct_count": 5,
+//             "total_count": 10,
+//         }
+//     },
+//     {
+//         "id": 2,
+//         "operator": "aten::sub",
+//         "uint8": {
+//             "correct_count": 10,
+//             "total_count": 10,
+//         },
+//         "float32": {
+//             "correct_count": 10,
+//             "total_count": 10,
+//         }
+//     },
+//     {
+//         "id": 3,
+//         "operator": "aten::matmul",
+//         "uint8": {
+//             "correct_count": 0,
+//             "total_count": 10,
+//         },
+//         "float32": {
+//             "correct_count": 0,
+//             "total_count": 10,
+//         }
+//     },
+//     {
+//         "id": 3,
+//         "operator": "aten::conv2d",
+//         "uint8": {
+//             "correct_count": 0,
+//             "total_count": 0,
+//         },
+//         "float32": {
+//             "correct_count": 5,
+//             "total_count": 10,
+//         }
+//     },
+// ], 1000);
+
+const rows = opset9Data;
 
 const columns = [
     {
         id: 1,
-        field: 'operation',
-        label: 'Operation',
+        field: 'operator',
+        label: 'operator',
     },
     {
         id: 2,
