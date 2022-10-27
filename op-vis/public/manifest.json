@@ -1,0 +1,9 @@
+{
+  "short_name": "Op Matrix",
+  "name": "Op Matrix",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
