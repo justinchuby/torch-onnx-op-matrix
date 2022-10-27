@@ -34,60 +34,7 @@ const CellRenderer = ({ tableManager, value, field, data, column, colIndex, rowI
     );
 }
 
-
-// const repeat = (arr, n) => Array(n).fill(arr).flat();
-
-// const rows = repeat([
-//     {
-//         "id": 1,
-//         "operator": "aten::add",
-//         "uint8": {
-//             "correct_count": 6,
-//             "total_count": 10,
-//         },
-//         "float32": {
-//             "correct_count": 5,
-//             "total_count": 10,
-//         }
-//     },
-//     {
-//         "id": 2,
-//         "operator": "aten::sub",
-//         "uint8": {
-//             "correct_count": 10,
-//             "total_count": 10,
-//         },
-//         "float32": {
-//             "correct_count": 10,
-//             "total_count": 10,
-//         }
-//     },
-//     {
-//         "id": 3,
-//         "operator": "aten::matmul",
-//         "uint8": {
-//             "correct_count": 0,
-//             "total_count": 10,
-//         },
-//         "float32": {
-//             "correct_count": 0,
-//             "total_count": 10,
-//         }
-//     },
-//     {
-//         "id": 3,
-//         "operator": "aten::conv2d",
-//         "uint8": {
-//             "correct_count": 0,
-//             "total_count": 0,
-//         },
-//         "float32": {
-//             "correct_count": 5,
-//             "total_count": 10,
-//         }
-//     },
-// ], 1000);
-
+// TODO: Pages, sorting, exceptions
 const rows = opset9Data;
 
 const columns = [
