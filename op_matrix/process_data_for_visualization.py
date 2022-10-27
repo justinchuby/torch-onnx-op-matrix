@@ -11,7 +11,14 @@ def process_data_for_visualization(data: dict) -> list[dict]:
         dtype = test_result["dtype"].split("torch.")[1]
         correct = test_result["correct"]
         total = test_result["total"]
-        results[operator][dtype] = {"correct_count": correct, "total_count": total}
+        aten_name = test_result["aten_name"]
+        exceptions = test_result["exceptions"]
+        results[operator][dtype] = {
+            "correct_count": correct,
+            "total_count": total,
+            "aten_name": aten_name,
+            "exceptions": exceptions,
+        }
 
     return [{"operator": operator, **results} for operator, results in results.items()]
 
