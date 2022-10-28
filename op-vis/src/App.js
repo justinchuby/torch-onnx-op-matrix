@@ -1,9 +1,9 @@
-import './App.css';
 import OpMatrixTable from './Table';
 import surveyData from './data/op_survey.json';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import Container from 'react-bootstrap/Container';
+import './App.css';
 
 
 // TODO: Pages, sorting, exceptions
@@ -11,7 +11,7 @@ import Container from 'react-bootstrap/Container';
 const Page = ({ torch_version, onnx_version, opset, test_results }) => {
   return (
     <div className="Page" id={opset}>
-      <code>Tested on PyTorch {torch_version}; ONNX {onnx_version}</code>
+      <code>Tested on PyTorch {torch_version} {onnx_version ? `; ONNX ${onnx_version}` : ""}</code>
       <OpMatrixTable rows={test_results} />
     </div>
   );

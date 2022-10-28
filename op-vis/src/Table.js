@@ -60,21 +60,20 @@ const CellRenderer = ({
     supportClass = 'support-partial';
   }
   const popover = (
-    // <CellPopover id={`${data.operator}-${rowIndex}-${colIndex}`}>
     <CellPopover>
       <ExceptionDetails exceptions={exceptions} />
     </CellPopover>
   );
   //  id={`${rowIndex}-${colIndex}`}
   return (
-    <div className={`rgt-cell ${supportClass}`}>
+    <div className={`${supportClass}`}>
       <div
         className={'rgt-cell-inner'}
         style={{ display: 'flex', alignItems: 'center', overflow: 'hidden' }}
       >
         <OverlayTrigger trigger="click" placement="right" overlay={popover}>
           <span className="rgt-text-truncate support-text">
-            {correctCount} / {totalConnt}
+            {correctCount} / {totalConnt} &nbsp;&nbsp;&nbsp;
           </span>
         </OverlayTrigger>
       </div>
@@ -88,92 +87,33 @@ const columns = [
     field: 'operator',
     label: 'operator',
   },
-  {
-    id: 2,
-    field: 'uint8',
-    label: 'uint8',
-    cellRenderer: CellRenderer,
-  },
-  {
-    id: 3,
-    field: 'int8',
-    label: 'int8',
-    cellRenderer: CellRenderer,
-  },
-  {
-    id: 4,
-    field: 'int16',
-    label: 'int16',
-    cellRenderer: CellRenderer,
-  },
-  {
-    id: 5,
-    field: 'int32',
-    label: 'int32',
-    cellRenderer: CellRenderer,
-  },
-  {
-    id: 6,
-    field: 'int64',
-    label: 'int64',
-    cellRenderer: CellRenderer,
-  },
-  {
-    id: 7,
-    field: 'bool',
-    label: 'bool',
-    cellRenderer: CellRenderer,
-  },
-  {
-    id: 8,
-    field: 'float16',
-    label: 'float16',
-    cellRenderer: CellRenderer,
-  },
-  {
-    id: 9,
-    field: 'float32',
-    label: 'float32',
-    cellRenderer: CellRenderer,
-  },
-  {
-    id: 10,
-    field: 'float64',
-    label: 'float64',
-    cellRenderer: CellRenderer,
-  },
-  {
-    id: 11,
-    field: 'bfloat16',
-    label: 'bfloat16',
-    cellRenderer: CellRenderer,
-  },
-  {
-    id: 12,
-    field: 'complex64',
-    label: 'complex64',
-    cellRenderer: CellRenderer,
-  },
-  {
-    id: 13,
-    field: 'complex128',
-    label: 'complex128',
-    cellRenderer: CellRenderer,
-  },
-  {
-    id: 14,
-    field: 'qint8',
-    label: 'qint8',
-    cellRenderer: CellRenderer,
-  },
-  {
-    id: 15,
-    field: 'quint8',
-    label: 'quint8',
-    cellRenderer: CellRenderer,
-  },
 ];
 
-const OpMatrixTable = ({ rows }) => <GridTable columns={columns} rows={rows} />;
+columns.push(
+  ...[
+    'uint8',
+    'int8',
+    'int16',
+    'int32',
+    'int64',
+    'bool',
+    'float16',
+    'float32',
+    'float64',
+    'bfloat16',
+    'complex64',
+    'complex128',
+    'qint8',
+    'quint8',
+  ].map((dtype, index) => ({
+    id: index + 1,
+    field: dtype,
+    label: dtype,
+    cellRenderer: CellRenderer,
+    width: '75px',
+  }))
+);
+
+const OpMatrixTable = ({ rows }) => <GridTable columns={columns} rows={rows} pageSizes={[30, 100, 1000]} />;
 
 export default OpMatrixTable;

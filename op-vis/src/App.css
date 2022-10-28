@@ -46,3 +46,11 @@
 .App .support-text {
   color: var(--support-text-fg);
 }
+
+.rgt-cell-header-inner {
+  font-size: 0.5rem;
+}
+
+.rgt-cell-inner {
+  margin: 0.7rem 20px;
+}
