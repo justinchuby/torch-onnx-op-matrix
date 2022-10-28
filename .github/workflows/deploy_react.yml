@@ -1,0 +1,43 @@
+name: Deploy Visualization
+
+on:
+  push:
+    branches: [main]
+
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4.2.0
+        with:
+          python-version: "3.10"
+      - name: Download artifacts
+
+      - name: Process data for visualization
+        run: |
+          python op_matrix/process_data_for_visualization.py --input_dir output/ --output op-vis/src/data/op_survey.json
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'npm'
+      - name: Build react app
+        run: npm ci --legacy-peer-deps
+      - run: npm run build
+
+      # Deploy artifacts to github
+      - name: Setup Pages
+        uses: actions/configure-pages@v2
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          # Upload the build folder
+          path: 'op-viz/build'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1

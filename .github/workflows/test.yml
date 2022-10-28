@@ -42,8 +42,9 @@ jobs:
         with:
           node-version: 18.x
           cache: 'npm'
-      - run: npm ci --legacy-peer-deps
-      - run: npm run build --if-present
+      - name: Build react app
+        run: npm ci --legacy-peer-deps
+      - run: npm run build
 
   test-fx-survey:
     runs-on: "ubuntu-latest"
