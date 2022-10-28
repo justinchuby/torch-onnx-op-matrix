@@ -2,25 +2,15 @@ name: Deploy Visualization
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
   workflow_dispatch:
 
 jobs:
-  deploy:
-    runs-on: "ubuntu-latest"
-
-    permissions:
-      id-token: write
-      pages: write
-
-    # Deploy to the github-pages environment
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
+  build:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Setup Python
@@ -45,16 +35,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-          cache: 'npm'
-          cache-dependency-path: 'op-vis/package-lock.json'
+          cache: "npm"
+          cache-dependency-path: "op-vis/package-lock.json"
       - name: Build react app
         run: npm ci --legacy-peer-deps
-        working-directory: 'op-vis'
+        working-directory: "op-vis"
       - run: npm run build
-        working-directory: 'op-vis'
+        working-directory: "op-vis"
       - name: Display structure of the build folder
         run: ls -R
-        working-directory: 'op-vis/build'
+        working-directory: "op-vis/build"
       # Deploy artifacts to github
       - name: Setup Pages
         uses: actions/configure-pages@v2
@@ -62,7 +52,22 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           # Upload the build folder
-          path: 'op-vis/build'
+          path: "op-vis/build"
+
+  deploy:
+    needs: build
+
+    permissions:
+      id-token: write
+      pages: write
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
