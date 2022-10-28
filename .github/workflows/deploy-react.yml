@@ -38,9 +38,7 @@ jobs:
       - name: Build react app
         run: npm ci --legacy-peer-deps
         working-directory: "op-vis"
-      - run: |
-          export NODE_OPTIONS=--max-old-space-size=4096
-          npm run build
+      - run: npm run build
         working-directory: "op-vis"
       - name: Display structure of the build folder
         run: ls -R
