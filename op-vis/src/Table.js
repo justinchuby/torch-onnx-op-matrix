@@ -3,13 +3,27 @@ import GridTable from '@nadavshaar/react-grid-table';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 
-const CellPopover = ({ exceptions, id }) => {
-  return (
-    <Popover id={id}>
-      <Popover.Header as="h3">Details</Popover.Header>
-      <Popover.Body>{`${exceptions}`}</Popover.Body>
-    </Popover>
-  );
+const CellPopover = React.forwardRef(
+  ({ popper, children, show: _, ...props }, ref) => {
+    return (
+      <Popover ref={ref} body {...props}>
+        {children}
+      </Popover>
+    );
+  }
+);
+
+const ExceptionDetails = ({ exceptions }) => {
+  //   <div>
+  <h3>Exception Details</h3>;
+  {
+    /* <div>
+      {exceptions.map((exception, index) => {
+        return <p key={index}>{exception.message}</p>;
+      })}
+    </div>
+  </div>; */
+  }
 };
 
 const CellRenderer = ({
@@ -23,13 +37,16 @@ const CellRenderer = ({
 }) => {
   let totalConnt;
   let correctCount;
+  let exceptions;
 
   if (data[column.field]) {
     totalConnt = data[column.field].total_count;
     correctCount = data[column.field].correct_count;
+    exceptions = data[column.field].exceptions;
   } else {
     totalConnt = 0;
     correctCount = 0;
+    exceptions = [];
   }
 
   let supportClass;
@@ -42,10 +59,13 @@ const CellRenderer = ({
   } else {
     supportClass = 'support-partial';
   }
-
   const popover = (
-    <CellPopover exceptions={data.exceptions} id={`${rowIndex}-${colIndex}`} />
+    // <CellPopover id={`${data.operator}-${rowIndex}-${colIndex}`}>
+    <CellPopover>
+      <ExceptionDetails exceptions={exceptions} />
+    </CellPopover>
   );
+  //  id={`${rowIndex}-${colIndex}`}
   return (
     <div className={`rgt-cell ${supportClass}`}>
       <div
@@ -154,8 +174,6 @@ const columns = [
   },
 ];
 
-const OpMatrixTable = ({ rows }) => (
-  <GridTable columns={columns} rows={rows} pageSize={1000} />
-);
+const OpMatrixTable = ({ rows }) => <GridTable columns={columns} rows={rows} />;
 
 export default OpMatrixTable;

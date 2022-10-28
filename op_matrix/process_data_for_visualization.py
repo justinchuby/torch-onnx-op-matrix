@@ -28,13 +28,30 @@ def process_data_for_visualization(
     return [{"operator": operator, **results} for operator, results in results.items()]
 
 
+def file_name_sort_key(file_name: str) -> tuple[int, str]:
+    # Remove the file extension
+    file_name = file_name.split(".")[0]
+    parts = file_name.split("_")
+    # Try to convert the last part to an int
+    try:
+        opset = int(parts[-1])
+        s = ""
+    except ValueError:
+        # Set to a big number so that it is sorted last
+        opset = 1000
+        s = parts[-1]
+    return opset, s
+
+
 def main(args):
     results = []
-    for file in sorted(os.listdir(args.input_dir), reverse=True):
+    for file in sorted(os.listdir(args.input_dir), key=file_name_sort_key):
         if file.endswith(".json"):
             with open(os.path.join(args.input_dir, file), "r") as f:
                 data = json.load(f)
-                processed_data = process_data_for_visualization(data, args.sample_exceptions)
+                processed_data = process_data_for_visualization(
+                    data, args.sample_exceptions
+                )
                 result = {
                     "file": file,
                     "torch_version": data["torch_version"],
