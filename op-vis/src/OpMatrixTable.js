@@ -6,8 +6,9 @@ import Popover from 'react-bootstrap/Popover';
 const CellPopover = React.forwardRef(
   ({ popper, children, show: _, ...props }, ref) => {
     return (
-      <Popover ref={ref} body {...props}>
-        {children}
+      <Popover ref={ref} {...props}>
+        <Popover.Header>Exception Details</Popover.Header>
+        <Popover.Body>{children}</Popover.Body>
       </Popover>
     );
   }
@@ -16,17 +17,13 @@ const CellPopover = React.forwardRef(
 // TODO: Display Exceptions
 
 const ExceptionDetails = ({ exceptions }) => {
-  //   <div>
-  <h3>Exception Details</h3>;
-  // FIXME: This does not work
-  {
-    /* <div>
+  return (
+    <>
       {exceptions.map((exception, index) => {
         return <p key={index}>{exception.message}</p>;
       })}
-    </div>
-  </div>; */
-  }
+    </>
+  );
 };
 
 const CellRenderer = ({
@@ -72,7 +69,7 @@ const CellRenderer = ({
     <div className={`${supportClass}`}>
       <div
         className={'rgt-cell-inner'}
-        style={{ display: 'flex', alignItems: 'center', overflow: 'hidden' }}
+        // style={{ display: 'flex', alignItems: 'center', overflow: 'hidden' }}
       >
         <OverlayTrigger trigger="click" placement="right" overlay={popover}>
           <span className="rgt-text-truncate support-text">
@@ -86,9 +83,10 @@ const CellRenderer = ({
 
 const columns = [
   {
-    id: 1,
+    id: 0,
     field: 'operator',
     label: 'operator',
+    editable: false,
   },
 ];
 
@@ -114,6 +112,9 @@ columns.push(
     label: dtype,
     cellRenderer: CellRenderer,
     width: '75px',
+    sortable: false,
+    editable: false,
+    searchable: false,
   }))
 );
 
