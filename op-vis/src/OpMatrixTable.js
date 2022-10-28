@@ -6,7 +6,7 @@ import Popover from 'react-bootstrap/Popover';
 const CellPopover = React.forwardRef(
   ({ popper, children, show: _, ...props }, ref) => {
     return (
-      <Popover ref={ref} placement="auto" {...props}>
+      <Popover ref={ref} placement="right" {...props}>
         <Popover.Header>Sampled Exception Details</Popover.Header>
         <Popover.Body>{children}</Popover.Body>
       </Popover>
