@@ -7,7 +7,7 @@ const CellPopover = React.forwardRef(
   ({ popper, children, show: _, ...props }, ref) => {
     return (
       <Popover ref={ref} placement="auto" {...props}>
-        <Popover.Header>Exception Details</Popover.Header>
+        <Popover.Header>Sampled Exception Details</Popover.Header>
         <Popover.Body>{children}</Popover.Body>
       </Popover>
     );
