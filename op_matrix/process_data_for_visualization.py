@@ -1,3 +1,10 @@
+"""Processes the data from the test results for visualization.
+
+Usage:
+    python3 op_matrix/process_data_for_visualization.py --input_dir 'output/' --output 'op-vis/src/data/op_survey.json'
+
+"""
+
 from collections import defaultdict
 import json
 import os
