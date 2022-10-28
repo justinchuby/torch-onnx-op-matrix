@@ -1,7 +1,7 @@
 """Processes the data from the test results for visualization.
 
 Usage:
-    python3 op_matrix/process_data_for_visualization.py --pretty --input_dir 'output/' --output 'op-vis/src/data/op_survey.json'
+    python3 op_matrix/process_data_for_visualization.py --pretty --input_dir 'output/' --output 'op-vis/public/data/op_survey.json'
 
 """
 from __future__ import annotations
