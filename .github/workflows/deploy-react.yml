@@ -3,6 +3,8 @@ name: Deploy Visualization
 on:
   push:
     branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
   workflow_dispatch:
 
@@ -16,37 +18,37 @@ jobs:
         uses: actions/setup-python@v4.2.0
         with:
           python-version: "3.10"
-      - name: Download artifacts
-      - uses: actions/download-artifact@v3
-        with:
-          name: op_survey_fx
-          path: output
-      - name: Display structure of downloaded files
-        run: ls -R
-        working-directory: output
-      - name: Process data for visualization
-        run: |
-          python op_matrix/process_data_for_visualization.py --input_dir output/ --output op-vis/src/data/op_survey.json
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-          cache: 'npm'
-          cache-dependency-path: 'op-vis/package-lock.json'
-      - name: Build react app
-        run: npm ci --legacy-peer-deps
-        working-directory: 'op-vis'
-      - run: npm run build
-        working-directory: 'op-vis'
+      # - name: Download artifacts
+      # - uses: actions/download-artifact@v3
+      #   with:
+      #     name: op_survey_fx
+      #     path: output
+      # - name: Display structure of downloaded files
+      #   run: ls -R
+      #   working-directory: output
+      # - name: Process data for visualization
+      #   run: |
+      #     python op_matrix/process_data_for_visualization.py --input_dir output/ --output op-vis/src/data/op_survey.json
+      # - name: Use Node.js ${{ matrix.node-version }}
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: 18.x
+      #     cache: 'npm'
+      #     cache-dependency-path: 'op-vis/package-lock.json'
+      # - name: Build react app
+      #   run: npm ci --legacy-peer-deps
+      #   working-directory: 'op-vis'
+      # - run: npm run build
+      #   working-directory: 'op-vis'
 
-      # Deploy artifacts to github
-      - name: Setup Pages
-        uses: actions/configure-pages@v2
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          # Upload the build folder
-          path: 'op-viz/build'
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v1
+      # # Deploy artifacts to github
+      # - name: Setup Pages
+      #   uses: actions/configure-pages@v2
+      # - name: Upload artifact
+      #   uses: actions/upload-pages-artifact@v1
+      #   with:
+      #     # Upload the build folder
+      #     path: 'op-viz/build'
+      # - name: Deploy to GitHub Pages
+      #   id: deployment
+      #   uses: actions/deploy-pages@v1
