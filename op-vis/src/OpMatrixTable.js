@@ -26,7 +26,7 @@ const ExceptionDetails = ({ exceptions }) => {
               <b>
                 #{index + 1}) {exception.type}
               </b>
-              <p>{exception.message}</p>
+              <p style={{ whiteSpace: 'pre-line' }}>{exception.message}</p>
               <span>Inputs: </span>
               <pre>{exception.inputs}</pre>
               <span>kwargs: </span>
