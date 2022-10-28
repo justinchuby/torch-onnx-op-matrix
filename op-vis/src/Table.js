@@ -3,15 +3,14 @@ import GridTable from '@nadavshaar/react-grid-table';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 
-const popover = (
-  <Popover id="popover-basic">
-    <Popover.Header as="h3">Popover right</Popover.Header>
-    <Popover.Body>
-      And here's some <strong>amazing</strong> content. It's very engaging.
-      right?
-    </Popover.Body>
-  </Popover>
-);
+const CellPopover = ({ exceptions, id }) => {
+  return (
+    <Popover id={id}>
+      <Popover.Header as="h3">Details</Popover.Header>
+      <Popover.Body>{`${exceptions}`}</Popover.Body>
+    </Popover>
+  );
+};
 
 const CellRenderer = ({
   tableManager,
@@ -43,6 +42,10 @@ const CellRenderer = ({
   } else {
     supportClass = 'support-partial';
   }
+
+  const popover = (
+    <CellPopover exceptions={data.exceptions} id={`${rowIndex}-${colIndex}`} />
+  );
   return (
     <div className={`rgt-cell ${supportClass}`}>
       <div
@@ -151,7 +154,7 @@ const columns = [
   },
 ];
 
-const OpMatrixTable = (rows) => (
+const OpMatrixTable = ({ rows }) => (
   <GridTable columns={columns} rows={rows} pageSize={1000} />
 );
 
