@@ -2,14 +2,13 @@ name: Deploy Visualization
 
 on:
   push:
-    branches: [main]
+    branches: ["main"]
 
   workflow_dispatch:
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - name: Setup Python
@@ -17,9 +16,12 @@ jobs:
         with:
           python-version: "3.10"
       - name: Download artifacts
-      - uses: actions/download-artifact@v3
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v2
         with:
-          name: op_survey_fx
+          workflow: main.yml
+          workflow_conclusion: success
+          name: op_survey_results
           path: output
       - name: Display structure of downloaded files
         run: ls -R
@@ -31,14 +33,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-          cache: 'npm'
-          cache-dependency-path: 'op-vis/package-lock.json'
+          cache: "npm"
+          cache-dependency-path: "op-vis/package-lock.json"
       - name: Build react app
         run: npm ci --legacy-peer-deps
-        working-directory: 'op-vis'
+        working-directory: "op-vis"
       - run: npm run build
-        working-directory: 'op-vis'
-
+        working-directory: "op-vis"
+      - name: Display structure of the build folder
+        run: ls -R
+        working-directory: "op-vis/build"
       # Deploy artifacts to github
       - name: Setup Pages
         uses: actions/configure-pages@v2
@@ -46,7 +50,22 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           # Upload the build folder
-          path: 'op-viz/build'
+          path: "op-vis/build"
+
+  deploy:
+    needs: build
+
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
