@@ -33,6 +33,18 @@ jobs:
           export TORCH_ONNX_EXPERIMENTAL_RUNTIME_TYPE_CHECK=ERRORS
           python op_matrix/onnx_op_survey.py --opset ${{ matrix.opset }} --debug
 
+      # Build visualization
+      - name: Process data for visualization
+        run: |
+          python op_matrix/process_data_for_visualization.py --input_dir output/ --output op-vis/src/data/op_survey.json
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'npm'
+      - run: npm ci --legacy-peer-deps
+      - run: npm run build --if-present
+
   test-fx-survey:
     runs-on: "ubuntu-latest"
 
