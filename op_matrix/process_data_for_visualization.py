@@ -4,12 +4,13 @@ Usage:
     python3 op_matrix/process_data_for_visualization.py --pretty --input_dir 'output/' --output 'op-vis/src/data/op_survey.json'
 
 """
+from __future__ import annotations
 
-from collections import defaultdict
+import argparse
 import json
 import os
-import argparse
 import random
+from collections import defaultdict
 
 
 def process_data_for_visualization(
