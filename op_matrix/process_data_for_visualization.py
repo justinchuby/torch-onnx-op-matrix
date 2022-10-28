@@ -1,15 +1,16 @@
 """Processes the data from the test results for visualization.
 
 Usage:
-    python3 op_matrix/process_data_for_visualization.py --input_dir 'output/' --output 'op-vis/src/data/op_survey.json'
+    python3 op_matrix/process_data_for_visualization.py --pretty --input_dir 'output/' --output 'op-vis/public/data/op_survey.json'
 
 """
+from __future__ import annotations
 
-from collections import defaultdict
+import argparse
 import json
 import os
-import argparse
 import random
+from collections import defaultdict
 
 
 def process_data_for_visualization(
@@ -71,7 +72,7 @@ def main(args):
     output_dir = os.path.dirname(args.output)
     os.makedirs(output_dir, exist_ok=True)
     with open(args.output, "w") as f:
-        json.dump(results, f, indent=2)
+        json.dump(results, f, indent=2 if args.pretty else None)
 
 
 if __name__ == "__main__":
@@ -79,5 +80,6 @@ if __name__ == "__main__":
     parser.add_argument("--input_dir", type=str, required=True)
     parser.add_argument("--output", type=str, required=True)
     parser.add_argument("--sample_exceptions", type=int, default=2)
+    parser.add_argument("--pretty", action="store_true")
     args = parser.parse_args()
     main(args)

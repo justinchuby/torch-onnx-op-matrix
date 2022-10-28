@@ -38,7 +38,7 @@ const ExceptionDetails = ({ exceptions }) => {
       </>
     );
   } else {
-    return <p>All tests passed. ✨</p>;
+    return <p>All tests passed or not tested.</p>;
   }
 };
 

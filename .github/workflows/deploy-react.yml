@@ -28,7 +28,7 @@ jobs:
         working-directory: output
       - name: Process data for visualization
         run: |
-          python op_matrix/process_data_for_visualization.py --input_dir output/ --output op-vis/src/data/op_survey.json
+          python op_matrix/process_data_for_visualization.py --input_dir output/ --output op-vis/public/data/op_survey.json
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -38,9 +38,7 @@ jobs:
       - name: Build react app
         run: npm ci --legacy-peer-deps
         working-directory: "op-vis"
-      - run: |
-          export NODE_OPTIONS=--max-old-space-size=4096
-          npm run build
+      - run: npm run build
         working-directory: "op-vis"
       - name: Display structure of the build folder
         run: ls -R
