@@ -6,24 +6,40 @@ import Popover from 'react-bootstrap/Popover';
 const CellPopover = React.forwardRef(
   ({ popper, children, show: _, ...props }, ref) => {
     return (
-      <Popover ref={ref} {...props}>
-        <Popover.Header>Exception Details</Popover.Header>
+      <Popover ref={ref} placement="right" {...props}>
+        <Popover.Header>Sampled Exception Details</Popover.Header>
         <Popover.Body>{children}</Popover.Body>
       </Popover>
     );
   }
 );
 
-// TODO: Display Exceptions
+// TODO: Make the exception details body wider and scrollable.
 
 const ExceptionDetails = ({ exceptions }) => {
-  return (
-    <>
-      {exceptions.map((exception, index) => {
-        return <p key={index}>{exception.message}</p>;
-      })}
-    </>
-  );
+  if (exceptions && exceptions.length > 0) {
+    return (
+      <>
+        {exceptions.map((exception, index) => {
+          return (
+            <div key={index} stype={{ marginTop: '20px' }}>
+              <b>
+                #{index + 1}) {exception.type}
+              </b>
+              <p style={{ whiteSpace: 'pre-line' }}>{exception.message}</p>
+              <span>Inputs: </span>
+              <pre>{exception.inputs}</pre>
+              <span>kwargs: </span>
+              <pre>{exception.kwargs}</pre>
+              <pre>{exception.traceback}</pre>
+            </div>
+          );
+        })}
+      </>
+    );
+  } else {
+    return <p>All tests passed. ✨</p>;
+  }
 };
 
 const CellRenderer = ({
