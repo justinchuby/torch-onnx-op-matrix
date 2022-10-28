@@ -45,7 +45,7 @@ function App() {
         <h1>torch.onnx Op Support Matrix</h1>
         {data.length === 0 ? (
           <Spinner animation="border" role="status">
-            <span>Loading data...</span>
+            <span className="visually-hidden">Loading data...</span>
           </Spinner>
         ) : (
           <Tabs defaultActiveKey="9" className="mb-3">
