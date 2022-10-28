@@ -2,6 +2,7 @@
   "name": "op-vis",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@nadavshaar/react-grid-table": "^1.0.2",
     "@testing-library/jest-dom": "^5.16.5",
