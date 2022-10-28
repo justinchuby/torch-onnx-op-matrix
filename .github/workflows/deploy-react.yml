@@ -8,6 +8,9 @@ on:
 
   workflow_dispatch:
 
+permissions:
+  id-token: write
+
 jobs:
   deploy-react:
     runs-on: "ubuntu-latest"
@@ -45,7 +48,7 @@ jobs:
         working-directory: 'op-vis'
       - name: Display structure of the build folder
         run: ls -R
-        working-directory: 'op-vis'
+        working-directory: 'op-vis/build'
       # Deploy artifacts to github
       - name: Setup Pages
         uses: actions/configure-pages@v2
