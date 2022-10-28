@@ -19,8 +19,11 @@ jobs:
         with:
           python-version: "3.10"
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v2
         with:
+          workflow: main.yml
+          workflow_conclusion: success
           name: op_survey_fx
           path: output
       - name: Display structure of downloaded files
