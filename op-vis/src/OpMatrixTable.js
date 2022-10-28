@@ -14,29 +14,31 @@ const CellPopover = React.forwardRef(
   }
 );
 
+// TODO: Make the exception details body wider and scrollable.
+
 const ExceptionDetails = ({ exceptions }) => {
-  if (exceptions) {
+  if (exceptions && exceptions.length > 0) {
     return (
       <>
         {exceptions.map((exception, index) => {
           return (
-            <div key={index}>
-              <p>
-                #{index}: {exception.type}: {exception.message}
-              </p>
+            <div key={index} stype={{ marginTop: '20px' }}>
+              <b>
+                #{index + 1}) {exception.type}
+              </b>
+              <p>{exception.message}</p>
               <span>Inputs: </span>
               <pre>{exception.inputs}</pre>
               <span>kwargs: </span>
               <pre>{exception.kwargs}</pre>
-              <code>{exception.traceback}</code>
-              <br />
+              <pre>{exception.traceback}</pre>
             </div>
           );
         })}
       </>
     );
   } else {
-    return <p>No exceptions.</p>;
+    return <p>All tests passed. ✨</p>;
   }
 };
 
