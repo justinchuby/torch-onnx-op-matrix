@@ -6,7 +6,7 @@ import Popover from 'react-bootstrap/Popover';
 const CellPopover = React.forwardRef(
   ({ popper, children, show: _, ...props }, ref) => {
     return (
-      <Popover ref={ref} {...props}>
+      <Popover ref={ref} placement="auto" {...props}>
         <Popover.Header>Exception Details</Popover.Header>
         <Popover.Body>{children}</Popover.Body>
       </Popover>
@@ -14,16 +14,30 @@ const CellPopover = React.forwardRef(
   }
 );
 
-// TODO: Display Exceptions
-
 const ExceptionDetails = ({ exceptions }) => {
-  return (
-    <>
-      {exceptions.map((exception, index) => {
-        return <p key={index}>{exception.message}</p>;
-      })}
-    </>
-  );
+  if (exceptions) {
+    return (
+      <>
+        {exceptions.map((exception, index) => {
+          return (
+            <div key={index}>
+              <p>
+                #{index}: {exception.type}: {exception.message}
+              </p>
+              <span>Inputs: </span>
+              <pre>{exception.inputs}</pre>
+              <span>kwargs: </span>
+              <pre>{exception.kwargs}</pre>
+              <code>{exception.traceback}</code>
+              <br />
+            </div>
+          );
+        })}
+      </>
+    );
+  } else {
+    return <p>No exceptions.</p>;
+  }
 };
 
 const CellRenderer = ({
