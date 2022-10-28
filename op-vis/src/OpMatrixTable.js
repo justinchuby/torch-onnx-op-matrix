@@ -13,9 +13,12 @@ const CellPopover = React.forwardRef(
   }
 );
 
+// TODO: Display Exceptions
+
 const ExceptionDetails = ({ exceptions }) => {
   //   <div>
   <h3>Exception Details</h3>;
+  // FIXME: This does not work
   {
     /* <div>
       {exceptions.map((exception, index) => {
@@ -73,7 +76,7 @@ const CellRenderer = ({
       >
         <OverlayTrigger trigger="click" placement="right" overlay={popover}>
           <span className="rgt-text-truncate support-text">
-            {correctCount} / {totalConnt} &nbsp;&nbsp;&nbsp;
+            {correctCount} / {totalConnt}
           </span>
         </OverlayTrigger>
       </div>
@@ -114,6 +117,8 @@ columns.push(
   }))
 );
 
-const OpMatrixTable = ({ rows }) => <GridTable columns={columns} rows={rows} pageSizes={[30, 100, 1000]} />;
+const OpMatrixTable = ({ rows }) => (
+  <GridTable columns={columns} rows={rows} pageSizes={[20, 100, 1000]} />
+);
 
 export default OpMatrixTable;
