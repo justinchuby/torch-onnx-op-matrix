@@ -6,7 +6,7 @@ import Container from 'react-bootstrap/Container';
 import './App.css';
 
 
-// TODO: Pages, sorting, exceptions
+// TODO: Exceptions
 
 const Page = ({ torch_version, onnx_version, opset, test_results }) => {
   return (
