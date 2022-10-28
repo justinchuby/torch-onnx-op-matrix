@@ -43,7 +43,9 @@ jobs:
         working-directory: 'op-vis'
       - run: npm run build
         working-directory: 'op-vis'
-
+      - name: Display structure of the build folder
+        run: ls -R
+        working-directory: 'op-vis'
       # Deploy artifacts to github
       - name: Setup Pages
         uses: actions/configure-pages@v2
@@ -51,7 +53,7 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           # Upload the build folder
-          path: 'op-viz/build'
+          path: 'op-vis/build'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
