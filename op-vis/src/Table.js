@@ -1,6 +1,5 @@
 import React from 'react';
 import GridTable from '@nadavshaar/react-grid-table';
-import opset9Data from './data/op_survey_opset_9.json';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 
@@ -59,9 +58,6 @@ const CellRenderer = ({
     </div>
   );
 };
-
-// TODO: Pages, sorting, exceptions
-const rows = opset9Data;
 
 const columns = [
   {
@@ -131,31 +127,31 @@ const columns = [
   },
   {
     id: 12,
-    field: 'qint8',
-    label: 'qint8',
-    cellRenderer: CellRenderer,
-  },
-  {
-    id: 13,
-    field: 'quint8',
-    label: 'quint8',
-    cellRenderer: CellRenderer,
-  },
-  {
-    id: 14,
     field: 'complex64',
     label: 'complex64',
     cellRenderer: CellRenderer,
   },
   {
-    id: 15,
+    id: 13,
     field: 'complex128',
     label: 'complex128',
     cellRenderer: CellRenderer,
   },
+  {
+    id: 14,
+    field: 'qint8',
+    label: 'qint8',
+    cellRenderer: CellRenderer,
+  },
+  {
+    id: 15,
+    field: 'quint8',
+    label: 'quint8',
+    cellRenderer: CellRenderer,
+  },
 ];
 
-const OpMatrixTable = () => (
+const OpMatrixTable = (rows) => (
   <GridTable columns={columns} rows={rows} pageSize={1000} />
 );
 
