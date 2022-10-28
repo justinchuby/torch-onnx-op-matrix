@@ -8,12 +8,18 @@ on:
 
   workflow_dispatch:
 
-permissions:
-  id-token: write
-
 jobs:
-  deploy-react:
+  deploy:
     runs-on: "ubuntu-latest"
+
+    permissions:
+      id-token: write
+      pages: write
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - uses: actions/checkout@v3
