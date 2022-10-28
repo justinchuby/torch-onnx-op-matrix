@@ -2,13 +2,13 @@ name: Deploy Visualization
 
 on:
   push:
-    branches: [main]
+    branches: [ "main" ]
 
   workflow_dispatch:
 
 jobs:
   deploy-react:
-    runs-on: ubuntu-latest
+    runs-on: "ubuntu-latest"
 
     steps:
       - uses: actions/checkout@v3
