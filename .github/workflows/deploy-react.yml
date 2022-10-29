@@ -4,6 +4,12 @@ on:
   push:
     branches: ["main"]
 
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+    branches: ["main"]
+
   workflow_dispatch:
 
 jobs:
@@ -56,8 +62,8 @@ jobs:
     needs: build
 
     permissions:
-      pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source
+      pages: write # to deploy to Pages
+      id-token: write # to verify the deployment originates from an appropriate source
 
     # Deploy to the github-pages environment
     environment:
