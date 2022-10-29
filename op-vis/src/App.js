@@ -1,8 +1,10 @@
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import Container from 'react-bootstrap/Container';
-import Spinner from 'react-bootstrap/Spinner';
+import ProgressBar from 'react-bootstrap/ProgressBar';
+import Badge from 'react-bootstrap/Badge';
 
 import OpMatrixTable from './OpMatrixTable';
 
@@ -11,10 +13,12 @@ import './App.css';
 const Page = ({ torch_version, onnx_version, opset, test_results }) => {
   return (
     <div className="Page" id={opset}>
-      <code>
-        Tested on PyTorch {torch_version}
-        {onnx_version ? `; ONNX ${onnx_version}` : ''}
-      </code>
+      <span>
+        Tested on <Badge bg="secondary">PyTorch {torch_version}</Badge>
+        {onnx_version ? (
+          <Badge bg="secondary">{`ONNX ${onnx_version}`}</Badge>
+        ) : null}
+      </span>
       <OpMatrixTable rows={test_results} />
     </div>
   );
@@ -22,18 +26,28 @@ const Page = ({ torch_version, onnx_version, opset, test_results }) => {
 
 function App() {
   const [data, setData] = useState([]);
+  const [progress, setProgress] = useState(0);
   const getData = () => {
-    fetch('data/op_survey.json', {
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-    })
-      .then(function (response) {
-        return response.json();
+    axios
+      .get('data/op_survey.json', {
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        onDownloadProgress: (progressEvent) => {
+          const estimatedTotalSize = 286712384;
+          const percentage = Math.round(
+            (progressEvent.loaded / estimatedTotalSize) * 100
+          );
+          setProgress(percentage);
+        },
       })
-      .then(function (jsonData) {
-        setData(jsonData);
+      .then(function (response) {
+        setData(response.data);
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
       });
   };
   useEffect(() => {
@@ -44,9 +58,7 @@ function App() {
       <Container>
         <h1>torch.onnx Op Support Matrix</h1>
         {data.length === 0 ? (
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden">Loading data...</span>
-          </Spinner>
+          <ProgressBar animated now={progress} />
         ) : (
           <Tabs defaultActiveKey="9" className="mb-3">
             {data.map((data, index) => {
