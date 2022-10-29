@@ -58,7 +58,11 @@ function App() {
       <Container>
         <h1>torch.onnx Op Support Matrix</h1>
         {data.length === 0 ? (
-          <ProgressBar animated now={progress} />
+          <ProgressBar
+            animated
+            now={progress}
+            label="Downloading a few hundred megabytes"
+          />
         ) : (
           <Tabs defaultActiveKey="9" className="mb-3">
             {data.map((data, index) => {

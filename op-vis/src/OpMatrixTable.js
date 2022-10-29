@@ -6,7 +6,12 @@ import Popover from 'react-bootstrap/Popover';
 const CellPopover = React.forwardRef(
   ({ popper, children, show: _, ...props }, ref) => {
     return (
-      <Popover ref={ref} placement="right" style={{width: "300px"}} {...props}>
+      <Popover
+        ref={ref}
+        placement="right"
+        style={{ width: '300px' }}
+        {...props}
+      >
         <Popover.Header>Sampled Exception Details</Popover.Header>
         <Popover.Body>{children}</Popover.Body>
       </Popover>
@@ -80,17 +85,26 @@ const CellRenderer = ({
   );
   //  id={`${rowIndex}-${colIndex}`}
   return (
-    <div className={`${supportClass}`}>
-      <div
-        className={'rgt-cell-inner'}
-        // style={{ display: 'flex', alignItems: 'center', overflow: 'hidden' }}
-      >
-        <OverlayTrigger trigger="click" placement="right" overlay={popover}>
-          <span className="rgt-text-truncate support-text" style={{cursor: "help"}}>
-            {correctCount} / {totalConnt}
-          </span>
-        </OverlayTrigger>
-      </div>
+    <div
+      className={`rgt-cell-inner ${supportClass}`}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: '0.5px',
+        paddingTop: '10px',
+        paddingBottom: '10px',
+        textAlign: 'center',
+      }}
+    >
+      <OverlayTrigger trigger="click" placement="right" overlay={popover}>
+        <span
+          className="rgt-text-truncate support-text"
+          style={{ cursor: 'help', fontSize: '0.85em' }}
+        >
+          {correctCount} / {totalConnt}
+        </span>
+      </OverlayTrigger>
     </div>
   );
 };
@@ -125,7 +139,7 @@ columns.push(
     field: dtype,
     label: dtype,
     cellRenderer: CellRenderer,
-    width: '75px',
+    width: 'max-content',
     sortable: false,
     editable: false,
     searchable: false,
