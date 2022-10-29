@@ -6,7 +6,7 @@ import Popover from 'react-bootstrap/Popover';
 const CellPopover = React.forwardRef(
   ({ popper, children, show: _, ...props }, ref) => {
     return (
-      <Popover ref={ref} placement="right" {...props}>
+      <Popover ref={ref} placement="right" style={{width: "300px"}} {...props}>
         <Popover.Header>Sampled Exception Details</Popover.Header>
         <Popover.Body>{children}</Popover.Body>
       </Popover>
@@ -14,15 +14,13 @@ const CellPopover = React.forwardRef(
   }
 );
 
-// TODO: Make the exception details body wider and scrollable.
-
 const ExceptionDetails = ({ exceptions }) => {
   if (exceptions && exceptions.length > 0) {
     return (
       <>
         {exceptions.map((exception, index) => {
           return (
-            <div key={index} stype={{ marginTop: '20px' }}>
+            <div key={index}>
               <b>
                 #{index + 1}) {exception.type}
               </b>
@@ -88,7 +86,7 @@ const CellRenderer = ({
         // style={{ display: 'flex', alignItems: 'center', overflow: 'hidden' }}
       >
         <OverlayTrigger trigger="click" placement="right" overlay={popover}>
-          <span className="rgt-text-truncate support-text">
+          <span className="rgt-text-truncate support-text" style={{cursor: "help"}}>
             {correctCount} / {totalConnt}
           </span>
         </OverlayTrigger>

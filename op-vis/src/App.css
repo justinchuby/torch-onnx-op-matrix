@@ -1,20 +1,3 @@
-/* .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-} */
-
 :root {
   --supported: #2A8436;
   --no-support: #c44230;
@@ -47,10 +30,19 @@
   color: var(--support-text-fg);
 }
 
-/* .rgt-cell-header-inner {
+.rgt-cell-header-inner {
   font-size: 0.5rem;
-} */
+}
 
 .rgt-cell-inner {
   margin: 0.7rem 20px;
+}
+
+.popover {
+  --bs-popover-max-width: 600px;
+}
+
+.popover-body {
+  max-height: 600px;
+  overflow-y: auto;
 }
