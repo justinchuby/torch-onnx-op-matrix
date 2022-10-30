@@ -115,6 +115,7 @@ const columns = [
     field: 'operator',
     label: 'operator',
     editable: false,
+    pinned: true,
   },
 ];
 
@@ -147,7 +148,12 @@ columns.push(
 );
 
 const OpMatrixTable = ({ rows }) => (
-  <GridTable columns={columns} rows={rows} pageSizes={[20, 100, 1000]} />
+  <GridTable
+    columns={columns}
+    rows={rows}
+    pageSizes={[20, 100, 1000]}
+    minColumnResizeWidth={40}
+  />
 );
 
 export default OpMatrixTable;
