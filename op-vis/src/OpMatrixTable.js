@@ -104,7 +104,6 @@ const CellRenderer = ({
   } else {
     supportClass = 'support-partial';
   }
-  console.log(data);
   const popover = (
     <CellPopover>
       <ExceptionDetails
