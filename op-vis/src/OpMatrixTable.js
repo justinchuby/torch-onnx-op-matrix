@@ -19,6 +19,18 @@ const CellPopover = React.forwardRef(
   }
 );
 
+const TorchOp = ({ operator }) => {
+  return (
+    <a
+      href={`https://pytorch.org/docs/stable/generated/torch.${operator}.html`}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <code>torch.{operator}</code>
+    </a>
+  );
+};
+
 const ExceptionDetails = ({
   exceptions,
   operator,
@@ -30,7 +42,8 @@ const ExceptionDetails = ({
     return (
       <>
         <p>
-          Tested <code>torch.{operator}</code> with <code>{dtype}</code> inputs.{' '}
+          Tested <TorchOp operator={operator} /> with <code>{dtype}</code>{' '}
+          inputs.{' '}
           <code>
             {correctCount} / {totalCount}
           </code>{' '}
@@ -57,7 +70,7 @@ const ExceptionDetails = ({
   } else if (totalCount === 0) {
     return (
       <p>
-        No tests were run for <code>torch.{operator}</code> with{' '}
+        No tests were run for <TorchOp operator={operator} /> with{' '}
         <code>{dtype}</code> inputs.
       </p>
     );
@@ -65,7 +78,7 @@ const ExceptionDetails = ({
     return (
       <p>
         All <code>{totalCount}</code> tests passed for{' '}
-        <code>torch.{operator}</code> with <code>{dtype}</code> inputs.
+        <TorchOp operator={operator} /> with <code>{dtype}</code> inputs.
       </p>
     );
   }
