@@ -12,17 +12,31 @@ const CellPopover = React.forwardRef(
         style={{ width: '300px' }}
         {...props}
       >
-        <Popover.Header>Sampled Exception Details</Popover.Header>
+        <Popover.Header>Test Details</Popover.Header>
         <Popover.Body>{children}</Popover.Body>
       </Popover>
     );
   }
 );
 
-const ExceptionDetails = ({ exceptions }) => {
+const ExceptionDetails = ({
+  exceptions,
+  operator,
+  dtype,
+  correctCount,
+  totalCount,
+}) => {
   if (exceptions && exceptions.length > 0) {
     return (
       <>
+        <p>
+          Tested <code>torch.{operator}</code> with <code>{dtype}</code> inputs.{' '}
+          <code>
+            {correctCount} / {totalCount}
+          </code>{' '}
+          passed.
+        </p>
+        <p>Sampled failures:</p>
         {exceptions.map((exception, index) => {
           return (
             <div key={index}>
@@ -40,8 +54,20 @@ const ExceptionDetails = ({ exceptions }) => {
         })}
       </>
     );
+  } else if (totalCount === 0) {
+    return (
+      <p>
+        No tests were run for <code>torch.{operator}</code> with{' '}
+        <code>{dtype}</code> inputs.
+      </p>
+    );
   } else {
-    return <p>All tests passed or not tested.</p>;
+    return (
+      <p>
+        All <code>{totalCount}</code> tests passed for{' '}
+        <code>torch.{operator}</code> with <code>{dtype}</code> inputs.
+      </p>
+    );
   }
 };
 
@@ -54,36 +80,42 @@ const CellRenderer = ({
   colIndex,
   rowIndex,
 }) => {
-  let totalConnt;
+  let totalCount;
   let correctCount;
   let exceptions;
 
   if (data[column.field]) {
-    totalConnt = data[column.field].total_count;
+    totalCount = data[column.field].total_count;
     correctCount = data[column.field].correct_count;
     exceptions = data[column.field].exceptions;
   } else {
-    totalConnt = 0;
+    totalCount = 0;
     correctCount = 0;
     exceptions = [];
   }
 
   let supportClass;
-  if (totalConnt === 0) {
+  if (totalCount === 0) {
     supportClass = 'support-unknown';
-  } else if (correctCount === totalConnt) {
+  } else if (correctCount === totalCount) {
     supportClass = 'support-yes';
   } else if (correctCount === 0) {
     supportClass = 'support-no';
   } else {
     supportClass = 'support-partial';
   }
+  console.log(data);
   const popover = (
     <CellPopover>
-      <ExceptionDetails exceptions={exceptions} />
+      <ExceptionDetails
+        exceptions={exceptions}
+        operator={data.operator}
+        dtype={column.field}
+        correctCount={correctCount}
+        totalCount={totalCount}
+      />
     </CellPopover>
   );
-  //  id={`${rowIndex}-${colIndex}`}
   return (
     <div
       className={`rgt-cell-inner ${supportClass}`}
@@ -102,7 +134,7 @@ const CellRenderer = ({
           className="rgt-text-truncate support-text"
           style={{ cursor: 'help', fontSize: '0.85em' }}
         >
-          {correctCount} / {totalConnt}
+          {correctCount} / {totalCount}
         </span>
       </OverlayTrigger>
     </div>
