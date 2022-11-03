@@ -1,0 +1,89 @@
+
+:root {
+  --supported: #2B7D6D;
+  --no-support: #B92B0F;
+  --no-support-alt: #ee4c2c;
+  --no-support-pattern: repeating-linear-gradient(
+    45deg,
+    var(--no-support) 0,
+    var(--no-support-alt) 1px,
+    var(--no-support-alt) 0.4em,
+    var(--no-support) calc(0.25em + 1px),
+    var(--no-support) 0.75em
+  );
+  --partial: #f4a623;
+  --partial-pattern: repeating-linear-gradient(
+    90deg,
+    var(--partial) 0,
+    var(--partial) calc(0.25em + 1px),
+    var(--partial) 0.75em
+  );
+  --unknown-support: #BBBBBB;
+  /* Copilot generated the alternate color. Wow! */
+  --unknown-support-alt: #BBBBBB;
+  --unknown-support-pattern: repeating-linear-gradient(
+    0deg,
+    var(--unknown-support) 0,
+    var(--unknown-support-alt) 1px,
+    var(--unknown-support-alt) 0.4em,
+    var(--unknown-support) calc(0.25em + 1px),
+    var(--unknown-support) 0.75em
+  );
+  --support-text-fg: #fff;
+
+}
+
+$theme-colors: (
+    "info": #ee4c2c,
+);
+$headings-font-family: helvetica;
+$font-family-sans-serif: helvetica neue, helvetica, arial, sans-serif;
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link{
+  color: #ee4c2c !important;
+}
+.nav-tabs .nav-link, .nav-tabs .nav-item.show .nav-link{
+  color: #262626 !important;
+}
+
+.App .support-yes {
+  background: var(--supported);
+}
+
+.App .support-no {
+  background: var(--no-support-pattern);
+}
+
+.App .support-partial {
+  background: var(--partial-pattern);
+}
+
+.App .support-unknown {
+  background: var(--unknown-support-pattern);
+}
+
+.App .support-text {
+  color: var(--support-text-fg);
+}
+
+.rgt-cell-header-inner {
+  font-size: 0.85em;
+  padding-left: 15px;
+  padding-right: 15px;
+  justify-content: center;
+}
+
+.popover {
+  --bs-popover-max-width: 600px;
+}
+
+.popover-body {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.rgt-footer-pagination-button {
+  background-color: #ee4c2c; 
+}
+
+@import "~bootstrap/scss/bootstrap";
