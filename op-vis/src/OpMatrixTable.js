@@ -146,7 +146,7 @@ const CellRenderer = ({
           className="rgt-text-truncate support-text"
           style={{ cursor: 'help', fontSize: '0.85em' }}
         >
-          {correctCount} / {totalCount}
+          <b>{correctCount} / {totalCount}</b>
         </span>
       </OverlayTrigger>
     </div>

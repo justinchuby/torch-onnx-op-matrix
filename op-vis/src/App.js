@@ -8,17 +8,19 @@ import Badge from 'react-bootstrap/Badge';
 
 import OpMatrixTable from './OpMatrixTable';
 
-import './App.css';
+import './App.scss';
 
 const Page = ({ torch_version, onnx_version, opset, test_results }) => {
   return (
     <div className="Page" id={opset}>
-      <span>
-        Tested on <Badge bg="secondary">PyTorch {torch_version}</Badge>
-        {onnx_version ? (
-          <Badge bg="secondary">{`ONNX ${onnx_version}`}</Badge>
-        ) : null}
-      </span>
+      <div className="pb-3">
+        <span>
+          Tested on: <Badge pill bg="info">PyTorch {torch_version}</Badge> {' '}
+          {onnx_version ? (
+            <Badge pill bg="info">{`ONNX ${onnx_version}`}</Badge>
+          ) : null}
+        </span>
+      </div>
       <OpMatrixTable rows={test_results} />
     </div>
   );
@@ -57,14 +59,25 @@ function App() {
     <div className="App">
       <Container>
         <h1>torch.onnx Op Support Matrix</h1>
+        <div className='py-2'>
+          
+          <h5>
+          <b className='mt-2'>Legend:</b>{' '}
+          <Badge className="support-yes">Supported: All tests passed</Badge>{' '}
+          <Badge className="support-partial">Partial Support: Some tests passed</Badge>{' '}
+          <Badge className="support-no">Broken Support: All tests failed</Badge>{' '}
+          <Badge className="support-unknown">Unsupported: No tests ran</Badge>{' '}
+          </h5>
+        </div>
         {data.length === 0 ? (
           <ProgressBar
             animated
+            variant="info"
             now={progress}
             label="Downloading a few hundred megabytes"
           />
         ) : (
-          <Tabs defaultActiveKey="9" className="mb-3">
+          <Tabs justify defaultActiveKey="9" className="mb-3">
             {data.map((data, index) => {
               return (
                 <Tab
