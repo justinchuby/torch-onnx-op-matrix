@@ -4,3 +4,4 @@ tqdm
 PyYAML
 beartype
 coremltools
+numpy==1.23.5
