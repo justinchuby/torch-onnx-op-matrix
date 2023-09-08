@@ -5,6 +5,7 @@ import json
 import os
 import traceback
 from typing import Any, List
+import warnings
 
 import torch
 import tqdm
@@ -21,8 +22,9 @@ def check_single_op(
     sample: Any,
 ) -> common.OpTestResult:
     try:
-        # Symbolic tracing frontend - captures the semantics of the module
-        torch.onnx.dynamo_export(model, *inputs, **sample.kwargs)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            torch.onnx.dynamo_export(model, *inputs, **sample.kwargs)
     except Exception as e:
         return common.OpTestResult(
             opset="onnx_dynamo",
