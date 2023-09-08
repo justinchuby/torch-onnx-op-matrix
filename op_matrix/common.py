@@ -1,6 +1,5 @@
 """Test consistency between torch.onnx exported operators and aten operators."""
 
-import itertools
 import dataclasses
 import logging
 from typing import Any, Dict, Iterator, List, Optional, AbstractSet, Tuple
@@ -8,7 +7,6 @@ from typing import Any, Dict, Iterator, List, Optional, AbstractSet, Tuple
 import torch
 from torch.testing._internal import common_methods_invocations
 from torch.testing._internal.opinfo.core import OpInfo
-from torch.testing._internal.opinfo import definitions as opinfo_definitions
 
 LIMIT_SAMPLE_PER_OP = 10
 

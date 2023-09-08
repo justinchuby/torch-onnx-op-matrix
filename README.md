@@ -8,9 +8,9 @@
 `^` Obtain the data here under `artifacts`
 
 
-Tool for continuously checking torch.onnx operator support status. The tool tests the torch.onnx exporter on all {torch operators, dtype} combinations and reports any errors.
+Tool for continuously checking `torch.onnx` operator support status. The tool tests the `torch.onnx.{export, dynamo_export}` exporter on all {torch operators, dtype} combinations and reports any errors.
 
-Additional tools also test running `torch.jit` and `torch.fx` on the ops, as well as running the `coremltools` exporter for comparison.
+Additional tools also test running `torch.jit` on the ops, as well as running the `coremltools` exporter for comparison.
 
 
 ## Development

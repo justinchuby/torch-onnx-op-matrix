@@ -24,9 +24,6 @@ def check_single_op(
         # TODO: Catch the mismatched warnings
         torch.jit.trace(model.eval(), inputs)
     except Exception as e:
-        # TODO: Test in place variants as well
-        # FIXME: Doesn't work now because of
-        # Proxy object cannot be iterated. This can be attempted when the Proxy is used in a loop or as a *args or **kwargs function argument. See the torch.fx docs on pytorch.org for a more detailed explanation of what types of control flow can be traced, and check out the Proxy docstring for help troubleshooting Proxy iteration errors
         return common.OpTestResult(
             opset="jit_trace",
             dtype=dtype,
@@ -92,7 +89,7 @@ def main(args):
         "torch_version": torch.__version__,
         "test_results": collection.as_dict(),
     }
-    with open(os.path.join(out_dir, f"op_survey_jit.json"), "w") as f:
+    with open(os.path.join(out_dir, "op_survey_jit.json"), "w") as f:
         json.dump(results_dict, f, indent=2)
 
 
