@@ -23,13 +23,10 @@ def check_single_op(
 ) -> common.OpTestResult:
     try:
         # Symbolic tracing frontend - captures the semantics of the module
-        torch.fx.symbolic_trace(model)
+        torch.onnx.dynamo_export(model, *inputs, **sample.kwargs)
     except Exception as e:
-        # TODO: Test in place variants as well
-        # FIXME: Doesn't work now because of
-        # Proxy object cannot be iterated. This can be attempted when the Proxy is used in a loop or as a *args or **kwargs function argument. See the torch.fx docs on pytorch.org for a more detailed explanation of what types of control flow can be traced, and check out the Proxy docstring for help troubleshooting Proxy iteration errors
         return common.OpTestResult(
-            opset="fx",
+            opset="onnx_dynamo",
             dtype=dtype,
             operator=op_info.name,
             aten_name=op_info.aten_name,
@@ -40,7 +37,7 @@ def check_single_op(
         )
 
     return common.OpTestResult(
-        opset="fx",
+        opset="onnx_dynamo",
         dtype=dtype,
         operator=op_info.name,
         aten_name=op_info.aten_name,
@@ -59,7 +56,7 @@ def test_op_consistency(all_samples) -> List[common.OpTestResult]:
         pbar := tqdm.tqdm(
             enumerate(all_samples),
             total=len(all_samples),
-            desc="Testing torch.fx",
+            desc="Testing torch.onnx.dynamo_export",
         )
     ):
         pbar.set_postfix({"dtype": dtype, "op": op_info.name})
@@ -75,7 +72,7 @@ def main(args):
     collection = common.ResultCollection()
 
     print("Producing samples...")
-    all_samples = list(common.produce_op_sample(target="fx"))
+    all_samples = list(common.produce_op_sample(target="onnx_dynamo"))
 
     if debug:
         print("Debug mode, only testing a subset of samples")

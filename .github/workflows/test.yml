@@ -49,7 +49,7 @@ jobs:
       - run: npm run build
         working-directory: 'op-vis'
 
-  test-fx-survey:
+  test-onnx-dynamo-survey:
     runs-on: "ubuntu-latest"
 
     steps:
@@ -63,7 +63,7 @@ jobs:
           bash install.sh
       - name: Run survey
         run: |
-          python op_matrix/fx_op_survey.py --debug
+          python op_matrix/onnx_dynamo_op_survey.py --debug
 
   test-jit-survey:
     runs-on: "ubuntu-latest"
