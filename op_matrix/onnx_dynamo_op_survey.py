@@ -1,4 +1,4 @@
-"""Survey torch.fx support models."""
+"""Survey torch.onnx.dynamo_export supported models."""
 
 import argparse
 import json
@@ -7,7 +7,6 @@ import traceback
 from typing import Any, List
 
 import torch
-import torch.fx
 import tqdm
 from torch.testing._internal.opinfo.core import OpInfo
 
@@ -90,7 +89,7 @@ def main(args):
         "torch_version": torch.__version__,
         "test_results": collection.as_dict(),
     }
-    with open(os.path.join(out_dir, f"op_survey_fx.json"), "w") as f:
+    with open(os.path.join(out_dir, f"op_survey_dynamo.json"), "w") as f:
         json.dump(results_dict, f, indent=2)
 
 
