@@ -20,9 +20,7 @@ jobs:
         opset: [9, 13, 15, 17]
         os: ["macos-latest"]
         # Disable "ubuntu-latest" for now because it still has non-held errors
-
     runs-on: ${{ matrix.os }}
-
     steps:
       - uses: actions/checkout@v3
       - name: Setup Python
@@ -42,9 +40,9 @@ jobs:
           name: op_survey_results
           path: output/op_survey_opset_${{ matrix.opset }}.json
           retention-days: 14
-  run-fx-survey:
-    runs-on: "ubuntu-latest"
 
+  run-onnx-dynamo-survey:
+    runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v3
       - name: Setup Python
@@ -56,17 +54,16 @@ jobs:
           bash install.sh
       - name: Run survey
         run: |
-          python op_matrix/fx_op_survey.py
+          python op_matrix/onnx_dynamo_op_survey.py
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
         with:
           name: op_survey_results
-          path: output/op_survey_fx.json
+          path: output/onnx_dynamo_op_survey.json
           retention-days: 14
 
   run-jit-survey:
     runs-on: "ubuntu-latest"
-
     steps:
       - uses: actions/checkout@v3
       - name: Setup Python
