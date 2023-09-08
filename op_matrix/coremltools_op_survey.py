@@ -64,7 +64,7 @@ def test_op_consistency(all_samples) -> List[common.OpTestResult]:
         pbar := tqdm.tqdm(
             enumerate(all_samples),
             total=len(all_samples),
-            desc=f"Testing coremltools",
+            desc="Testing coremltools",
         )
     ):
         pbar.set_postfix({"dtype": dtype, "op": op_info.name})
@@ -93,7 +93,7 @@ def main():
         "coremltools_version": ct.__version__,
         "test_results": collection.as_dict(),
     }
-    with open(os.path.join(out_dir, f"op_survey_coremltools.json"), "w") as f:
+    with open(os.path.join(out_dir, "op_survey_coremltools.json"), "w") as f:
         json.dump(results_dict, f, indent=2)
 
 
