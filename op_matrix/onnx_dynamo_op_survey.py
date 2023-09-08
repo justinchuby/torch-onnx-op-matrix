@@ -9,6 +9,7 @@ import warnings
 
 import torch
 import tqdm
+import onnx
 from torch.testing._internal.opinfo.core import OpInfo
 
 import common
@@ -24,7 +25,28 @@ def check_single_op(
     try:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            torch.onnx.dynamo_export(model, *inputs, **sample.kwargs)
+            output = torch.onnx.dynamo_export(
+                model,
+                *inputs,
+                **sample.kwargs,
+                export_options=torch.onnx.ExportOptions(op_level_debug=False),
+            )
+    except Exception as e:
+        return common.OpTestResult(
+            opset="onnx_dynamo",
+            dtype=dtype,
+            operator=op_info.name,
+            aten_name=op_info.aten_name,
+            exception=e,
+            traceback=traceback.format_exc(),
+            inputs=inputs,
+            kwargs=sample.kwargs,
+        )
+
+    # Check the model with ONNX
+    onnx_model = output.model_proto
+    try:
+        onnx.checker.check_model(onnx_model, full_check=True)  # type: ignore
     except Exception as e:
         return common.OpTestResult(
             opset="onnx_dynamo",
@@ -82,8 +104,6 @@ def main(args):
     results = test_op_consistency(all_samples)
     for result in results:
         collection.add(result)
-    # Save results to a json file
-    print("Saving results...")
     out_dir = "output"
     os.makedirs(out_dir, exist_ok=True)
 
@@ -91,7 +111,10 @@ def main(args):
         "torch_version": torch.__version__,
         "test_results": collection.as_dict(),
     }
-    with open(os.path.join(out_dir, "op_survey_dynamo.json"), "w") as f:
+    # Save results to a json file
+    out_path = os.path.join(out_dir, "op_survey_dynamo.json")
+    print(f"Saving results to {out_path}...")
+    with open(out_path, "w") as f:
         json.dump(results_dict, f, indent=2)
 
 
