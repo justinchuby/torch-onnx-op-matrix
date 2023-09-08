@@ -117,7 +117,7 @@ def main(args):
         "test_results": collection.as_dict(),
     }
     # Save results to a json file
-    out_path = os.path.join(out_dir, "op_survey_dynamo.json")
+    out_path = os.path.join(out_dir, "onnx_dynamo_op_survey.json")
     print(f"Saving results to {out_path}...")
     with open(out_path, "w") as f:
         json.dump(results_dict, f, indent=2)
