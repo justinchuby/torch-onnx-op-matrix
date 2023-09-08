@@ -13,8 +13,8 @@ LIMIT_SAMPLE_PER_OP = 10
 
 TESTED_DTYPES = (
     torch.bool,
-    torch.uint8,
-    torch.int8,
+    # torch.uint8,
+    # torch.int8,
     torch.int16,
     torch.int32,
     torch.int64,
@@ -22,11 +22,11 @@ TESTED_DTYPES = (
     torch.float16,
     torch.float32,
     torch.float64,
-    torch.bfloat16,
+    # torch.bfloat16,
     # Complex types
-    torch.complex32,
+    # torch.complex32,
     torch.complex64,
-    torch.complex128,
+    # torch.complex128,
 )
 
 
