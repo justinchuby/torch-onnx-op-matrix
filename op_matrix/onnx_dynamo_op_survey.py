@@ -11,8 +11,13 @@ import torch
 import tqdm
 import onnx
 from torch.testing._internal.opinfo.core import OpInfo
+import torch.onnx._internal.diagnostics.infra.context
 
 import common
+
+torch.onnx._internal.diagnostics.infra.context.DiagnosticContext.dump = (
+    lambda *args, **kwargs: None
+)
 
 
 def check_single_op(
