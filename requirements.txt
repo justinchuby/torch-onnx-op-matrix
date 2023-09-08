@@ -1,7 +1,8 @@
+onnxscript
 onnx
 expecttest
 tqdm
 PyYAML
 beartype
 coremltools
-numpy==1.23.5
+numpy
