@@ -33,7 +33,6 @@ def check_single_op(
             output = torch.onnx.dynamo_export(
                 model,
                 *inputs,
-                **sample.kwargs,
                 export_options=torch.onnx.ExportOptions(op_level_debug=False),
             )
     except Exception as e:
