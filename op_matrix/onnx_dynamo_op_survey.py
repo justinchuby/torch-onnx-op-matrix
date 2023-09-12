@@ -27,6 +27,7 @@ def check_single_op(
     dtype: torch.dtype,
     sample: Any,
 ) -> common.OpTestResult:
+    torch._dynamo.reset()
     try:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
