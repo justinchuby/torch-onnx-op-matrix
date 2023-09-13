@@ -64,6 +64,7 @@ def main(args):
                     "file": file,
                     "torch_version": data["torch_version"],
                     "onnx_version": data.get("onnx_version"),
+                    "onnxscript_version": data.get("onnxscript_version"),
                     "opset": data["test_results"][0]["opset"],
                     "test_results": processed_data,
                 }
