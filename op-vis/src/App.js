@@ -88,6 +88,7 @@ function App() {
                   <Page
                     torch_version={data.torch_version}
                     onnx_version={data.onnx_version}
+                    onnxscript_version={data.onnxscript_version}
                     opset={data.opset}
                     test_results={data.test_results}
                   />
