@@ -10,7 +10,7 @@ import OpMatrixTable from './OpMatrixTable';
 
 import './App.scss';
 
-const Page = ({ torch_version, onnx_version, opset, test_results }) => {
+const Page = ({ torch_version, onnx_version, onnxscript_version, opset, test_results }) => {
   return (
     <div className="Page" id={opset}>
       <div className="pb-3">
@@ -18,6 +18,9 @@ const Page = ({ torch_version, onnx_version, opset, test_results }) => {
           Tested on: <Badge pill bg="info">PyTorch {torch_version}</Badge> {' '}
           {onnx_version ? (
             <Badge pill bg="info">{`ONNX ${onnx_version}`}</Badge>
+          ) : null} {' '}
+          {onnxscript_version ? (
+            <Badge pill bg="info">{`ONNX Script ${onnxscript_version}`}</Badge>
           ) : null}
         </span>
       </div>
@@ -88,6 +91,7 @@ function App() {
                   <Page
                     torch_version={data.torch_version}
                     onnx_version={data.onnx_version}
+                    onnxscript_version={data.onnxscript_version}
                     opset={data.opset}
                     test_results={data.test_results}
                   />

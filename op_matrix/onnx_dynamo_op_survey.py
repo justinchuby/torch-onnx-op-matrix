@@ -10,6 +10,7 @@ import warnings
 import torch
 import tqdm
 import onnx
+import onnxscript
 from torch.testing._internal.opinfo.core import OpInfo
 import torch.onnx._internal.diagnostics.infra.context
 
@@ -114,6 +115,8 @@ def main(args):
 
     results_dict = {
         "torch_version": torch.__version__,
+        "onnx_version": onnx.__version__,
+        "onnxscript_version": onnxscript.__version__,
         "test_results": collection.as_dict(),
     }
     # Save results to a json file
