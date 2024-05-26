@@ -60,7 +60,6 @@ function App() {
       <Container>
         <h1>torch.onnx Op Support Matrix</h1>
         <div className='py-2'>
-          
           <h5>
           <b className='mt-2'>Legend:</b>{' '}
           <Badge className="support-yes">Supported: All tests passed</Badge>{' '}
@@ -81,8 +80,8 @@ function App() {
             {data.map((data, index) => {
               return (
                 <Tab
-                  eventKey={`${data.opset}`}
-                  title={`${data.opset}`}
+                  eventKey={`${data.dtype}`}
+                  title={`${data.dtype}`}
                   key={index}
                 >
                   <Page
