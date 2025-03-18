@@ -62,24 +62,3 @@ jobs:
           name: op_survey_results
           path: output/onnx_dynamo_op_survey.json
           retention-days: 14
-
-  run-jit-survey:
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - name: Install dependencies
-        run: |
-          bash install.sh
-      - name: Run survey
-        run: |
-          python op_matrix/jit_op_survey.py
-      - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v4
-        with:
-          name: op_survey_results
-          path: output/op_survey_jit.json
-          retention-days: 14
