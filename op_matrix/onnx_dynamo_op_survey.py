@@ -1,4 +1,4 @@
-"""Survey torch.onnx.dynamo_export supported models."""
+"""Survey torch.onnx.export supported models."""
 
 import argparse
 import json
@@ -16,10 +16,6 @@ import torch.onnx._internal.diagnostics.infra.context
 
 import common
 
-torch.onnx._internal.diagnostics.infra.context.DiagnosticContext.dump = (
-    lambda *args, **kwargs: None
-)
-
 
 def check_single_op(
     op_info: OpInfo,
@@ -32,10 +28,11 @@ def check_single_op(
     try:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            output = torch.onnx.dynamo_export(
+            output = torch.onnx.export(
                 model,
-                *inputs,
-                export_options=torch.onnx.ExportOptions(op_level_debug=False),
+                inputs,
+                dynamo=True,
+                verbose=False,
             )
     except Exception as e:
         return common.OpTestResult(
@@ -85,7 +82,7 @@ def test_op_consistency(all_samples) -> List[common.OpTestResult]:
         pbar := tqdm.tqdm(
             enumerate(all_samples),
             total=len(all_samples),
-            desc="Testing torch.onnx.dynamo_export",
+            desc="Testing torch.onnx.export dynamo",
         )
     ):
         pbar.set_postfix({"dtype": dtype, "op": op_info.name})
