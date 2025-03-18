@@ -3,4 +3,5 @@ tqdm
 PyYAML
 coremltools
 numpy
-onnxscript
+ml_dtypes
+typing_extensions
