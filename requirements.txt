@@ -1,7 +1,6 @@
 expecttest
 tqdm
 PyYAML
-coremltools
 numpy
 ml_dtypes
 typing_extensions
