@@ -1,6 +1,6 @@
 expecttest
 tqdm
 PyYAML
-beartype
 coremltools
 numpy
+onnxscript
