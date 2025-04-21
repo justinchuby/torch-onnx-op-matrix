@@ -12,7 +12,6 @@ import tqdm
 import onnx
 import onnxscript
 from torch.testing._internal.opinfo.core import OpInfo
-import torch.onnx._internal.diagnostics.infra.context
 
 import common
 
