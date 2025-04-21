@@ -4,3 +4,4 @@ PyYAML
 numpy
 ml_dtypes
 typing_extensions
+packaging
