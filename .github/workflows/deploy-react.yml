@@ -25,8 +25,16 @@ jobs:
         id: download-artifact
         uses: actions/download-artifact@v4
         with:
-          name: op_survey_results
+          name: op_survey_results_17
           path: output
+          merge-multiple: true
+      - name: Download artifacts
+        id: download-artifact-dynamo
+        uses: actions/download-artifact@v4
+        with:
+          name: op_survey_results_dynamo
+          path: output
+          merge-multiple: true
       - name: Display structure of downloaded files
         run: ls -R
         working-directory: output
