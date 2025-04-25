@@ -37,7 +37,7 @@ jobs:
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v4
         with:
-          name: op_survey_results
+          name: op_survey_results_${{ matrix.opset }}
           path: output/op_survey_opset_${{ matrix.opset }}.json
           retention-days: 14
 
@@ -59,6 +59,6 @@ jobs:
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v4
         with:
-          name: op_survey_results
+          name: op_survey_results_dynamo
           path: output/onnx_dynamo_op_survey.json
           retention-days: 14
