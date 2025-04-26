@@ -25,10 +25,10 @@ jobs:
         id: download-artifact
         uses: actions/download-artifact@v4
         with:
-          pattern: op_survey_results_*
+          name: op_survey_results_dynamo
           path: output
           merge-multiple: true
-          github-token: ${{ secrets.GH_PAT }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: 14674740985
       - name: Display structure of downloaded files
         run: ls -R
