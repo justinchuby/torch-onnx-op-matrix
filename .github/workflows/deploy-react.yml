@@ -28,6 +28,7 @@ jobs:
           name: op_survey_results_dynamo
           path: output
           merge-multiple: true
+          github-token: ${{ secrets.GH_PAT }}
       - name: Display structure of downloaded files
         run: ls -R
         working-directory: output
