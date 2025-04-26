@@ -25,7 +25,7 @@ jobs:
         id: download-artifact
         uses: actions/download-artifact@v4
         with:
-          pattern: op_survey_results_*
+          name: op_survey_results_dynamo
           path: output
           merge-multiple: true
       - name: Display structure of downloaded files
