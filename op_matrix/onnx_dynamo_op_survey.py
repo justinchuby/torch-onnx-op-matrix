@@ -32,6 +32,8 @@ def check_single_op(
                 inputs,
                 dynamo=True,
                 verbose=False,
+                optimize=False,
+                external_data=False,
             )
     except Exception as e:
         return common.OpTestResult(
