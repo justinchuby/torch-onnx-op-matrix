@@ -22,7 +22,7 @@ TESTED_DTYPES = (
     torch.float16,
     torch.float32,
     torch.float64,
-    # torch.bfloat16,
+    torch.bfloat16,
     # Complex types
     # torch.complex32,
     torch.complex64,
