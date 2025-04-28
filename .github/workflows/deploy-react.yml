@@ -53,7 +53,7 @@ jobs:
       - name: Process data for visualization
         run: |
           python op_matrix/process_data_for_visualization.py --input_dir output/ --output op-vis/public/data/op_survey.json
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v4
         with:
           node-version: 18.x
