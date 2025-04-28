@@ -165,8 +165,6 @@ const columns = [
 
 columns.push(
   ...[
-    'uint8',
-    'int8',
     'int16',
     'int32',
     'int64',
@@ -176,9 +174,6 @@ columns.push(
     'float64',
     'bfloat16',
     'complex64',
-    'complex128',
-    'qint8',
-    'quint8',
   ].map((dtype, index) => ({
     id: index + 1,
     field: dtype,
