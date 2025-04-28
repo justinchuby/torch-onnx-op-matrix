@@ -63,7 +63,7 @@ function App() {
       <Container>
         <h1>torch.onnx Op Support Matrix</h1>
         <div className='py-2'>
-          
+
           <h5>
           <b className='mt-2'>Legend:</b>{' '}
           <Badge className="support-yes">Supported: All tests passed</Badge>{' '}
@@ -80,12 +80,12 @@ function App() {
             label="Downloading a few hundred megabytes"
           />
         ) : (
-          <Tabs justify defaultActiveKey="9" className="mb-3">
+          <Tabs justify defaultActiveKey="onnx_dynamo" className="mb-3">
             {data.map((data, index) => {
               return (
                 <Tab
                   eventKey={`${data.opset}`}
-                  title={`${data.opset}`}
+                  title={data.opset === "onnx_dynamo" ? "dynamo=True" : `Legacy export opset ${data.opset}`}
                   key={index}
                 >
                   <Page
