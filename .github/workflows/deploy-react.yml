@@ -30,7 +30,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const runs = await github.actions.listWorkflowRuns({
+            const runs = await github.rest.actions.listWorkflowRuns({
               owner: context.repo.owner,
               repo: context.repo.repo,
               workflow_id: 'main.yml',
