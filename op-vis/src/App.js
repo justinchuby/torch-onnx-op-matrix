@@ -80,12 +80,12 @@ function App() {
             label="Downloading a few hundred megabytes"
           />
         ) : (
-          <Tabs justify defaultActiveKey="dynamo" className="mb-3">
+          <Tabs justify defaultActiveKey="onnx_dynamo" className="mb-3">
             {data.map((data, index) => {
               return (
                 <Tab
                   eventKey={`${data.opset}`}
-                  title={data.opset === "dynamo" ? "dynamo=True" : `Legacy export opset ${data.opset}`}
+                  title={data.opset === "onnx_dynamo" ? "dynamo=True" : `Legacy export opset ${data.opset}`}
                   key={index}
                 >
                   <Page
