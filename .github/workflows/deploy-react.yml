@@ -2,9 +2,9 @@ name: Deploy Visualization
 
 on:
   pull_request:
+    branches: ["main"]
   push:
     branches: ["main"]
-
   workflow_run:
     workflows: ["CI"]
     types:
