@@ -34,6 +34,7 @@ def check_single_op(
                 verbose=False,
                 optimize=False,
                 external_data=False,
+                opset_version=22,
             )
     except Exception as e:
         return common.OpTestResult(
