@@ -165,13 +165,13 @@ const columns = [
 
 columns.push(
   ...[
-    'int16',
+    // 'int16',
     'int32',
     'int64',
     'bool',
     'float16',
     'float32',
-    'float64',
+    // 'float64',
     'bfloat16',
     'complex64',
   ].map((dtype, index) => ({
