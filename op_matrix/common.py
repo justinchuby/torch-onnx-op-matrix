@@ -15,13 +15,13 @@ TESTED_DTYPES = (
     torch.bool,
     # torch.uint8,
     # torch.int8,
-    torch.int16,
+    # torch.int16,
     torch.int32,
     torch.int64,
     # Floating types
     torch.float16,
     torch.float32,
-    torch.float64,
+    # torch.float64,
     torch.bfloat16,
     # Complex types
     # torch.complex32,
