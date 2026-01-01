@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        opset: [17]
+        opset: [20]
         os: ["macos-latest"]
         # Disable "ubuntu-latest" for now because it still has non-held errors
     runs-on: ${{ matrix.os }}
