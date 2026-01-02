@@ -47,6 +47,7 @@ def check_single_op(
             model_buffer,
             opset_version=opset_version,
             do_constant_folding=True,
+            dynamo=False,
         )
     except Exception as e:
         # TODO: Test in place variants as well
